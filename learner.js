@@ -13,6 +13,6 @@ function createMagicNet(train_data, train_labels, opts, callback) {
   magicNet.onFinishBatch(callback); // callback once learning is complete
  
   // start training MagicNet. Every call trains all candidates in current batch
-  setInterval(function(){ magicNet.step(); }, 0});
+  setInterval(magicNet.step, 0});
   return magicNet;
 }
