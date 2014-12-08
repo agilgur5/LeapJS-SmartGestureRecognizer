@@ -2,6 +2,7 @@ Bridge = Bridge || {}
 Bridge.fingerNameMap = ["thumb", "index", "middle", "ring", "pinky"]
 Bridge.prototype.onFrame = (positions) -> console.log('Bridge onFrame not set')
 Bridge.prototype.parsePointable = (thing) ->
+  tipPosition = thing.tipPosition
   return {
     x: tipPosition[0]
     y: tipPosition[1]
