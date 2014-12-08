@@ -11,7 +11,7 @@ window.Bridge.parsePointable = (thing) ->
     z: tipPosition[2]
   }
 window.Bridge.parseFinger = (finger) ->
-  pointable = parsePointable(finger)
+  pointable = Bridge.parsePointable(finger)
   tipPosition = finger.tipPosition
   pointable['type'] = Bridge.fingerNameMap[finger.type]
   return pointable
@@ -24,12 +24,12 @@ window.Bridge.build = ->
     for hand in frame.hands
       handFingers = []
       for finger in frame.fingers
-        handFingers.push(Bridge.parseFinger(finger)) if finger.IsValid
+        handFingers.push(Bridge.parseFinger(finger))
       allFingers.push(handFingers)
     allPositions['fingers'] = allFingers
     allTools = []
     for tool in frame.tools
-      allTools.push(Bridge.parsePointable(tool)) if tool.IsValid
+      allTools.push(Bridge.parsePointable(tool))
     allPositions['tools'] = allTools
     _t.onFrame(allPositions) if _t.onFrame
 
