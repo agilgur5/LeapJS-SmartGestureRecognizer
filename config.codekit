@@ -45,7 +45,7 @@
 		"ignore": 0,
 		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/finger_utils.coffee",
-		"minifyOutput": 1,
+		"minifyOutput": 0,
 		"outputAbbreviatedPath": "\/js\/finger_utils.js",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,

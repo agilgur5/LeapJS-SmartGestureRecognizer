@@ -20,12 +20,19 @@ window.Bridge.build = ->
   _onFrame = (frame) ->
     return if frame.hands.length < 1
     allPositions = {}
+    allPositions.hands = []
     allFingers = []
     for hand in frame.hands
       handFingers = []
       for finger in frame.fingers
         handFingers.push(Bridge.parseFinger(finger))
       allFingers.push(handFingers)
+      handPos = {
+        x: hand.sphereCenter[0]
+        y: hand.sphereCenter[1]
+        z: hand.sphereCenter[2]
+      }
+      allPositions.hands.push(handPos)
     allPositions['fingers'] = allFingers
     allTools = []
     for tool in frame.tools
