@@ -1,19 +1,21 @@
+Leap = require './leaplib'
+
 Bridge = Bridge || {}
 Bridge.fingerNameMap = ["thumb", "index", "middle", "ring", "pinky"]
-Bridge.prototype.onFrame = (positions) -> console.log('Bridge onFrame not set')
-Bridge.prototype.parsePointable = (thing) ->
+Bridge.onFrame = (positions) -> console.log('Bridge onFrame not set')
+Bridge.parsePointable = (thing) ->
   tipPosition = thing.tipPosition
   return {
     x: tipPosition[0]
     y: tipPosition[1]
     z: tipPosition[2]
   }
-Bridge.prototype.parseFinger = (finger) ->
+Bridge.parseFinger = (finger) ->
   pointable = parsePointable(finger)
   tipPosition = finger.tipPosition
   pointable['type'] = Bridge.fingerNameMap[finger.type]
   return pointable
-Bridge.prototype.build = ->
+Bridge.build = ->
   _t = this
   _onFrame = (frame) ->
     return if frame.hands.length < 1
@@ -29,14 +31,18 @@ Bridge.prototype.build = ->
     for tool in frame.tools
       allTools.push(_t.parsePointable(tool)) if tool.valid()
     allPositions['tools'] = allTools
-    _t.onFrame(allPositions)
+    _t.onFrame(allPositions) if _t.onFrame
 
-  controller = new Leap.Controller({
+  controllerOpts = {
     host: '127.0.0.1',
     port: 6437,
     enableGestures: true,
     frameEventName: 'animationFrame',
     useAllPlugins: false
-  })
-  controller.connect()
-  controller.on('frame', _onFrame)
+  }
+  Leap.loop(controllerOpts, _onFrame)
+  #controller.connect()
+  #controller.on('frame', _onFrame)
+  return this
+
+module.exports = Bridge
