@@ -30,11 +30,12 @@
     var controllerOpts, _onFrame, _t;
     _t = this;
     _onFrame = function(frame) {
-      var allFingers, allPositions, allTools, finger, hand, handFingers, tool, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+      var allFingers, allPositions, allTools, finger, hand, handFingers, handPos, tool, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
       if (frame.hands.length < 1) {
         return;
       }
       allPositions = {};
+      allPositions.hands = [];
       allFingers = [];
       _ref = frame.hands;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -46,6 +47,12 @@
           handFingers.push(Bridge.parseFinger(finger));
         }
         allFingers.push(handFingers);
+        handPos = {
+          x: hand.sphereCenter[0],
+          y: hand.sphereCenter[1],
+          z: hand.sphereCenter[2]
+        };
+        allPositions.hands.push(handPos);
       }
       allPositions['fingers'] = allFingers;
       allTools = [];
