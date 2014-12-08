@@ -1,2 +1,2 @@
-(function(){var i;i=window.Bridge.build(),i.onFrame=function(i){var r;return r=FingerUtils.toNormalizedFrame(i),console.log("Frame: "+JSON.stringify(r))}}).call(this);
-//# sourceMappingURL=./bridgetest.map
+(function(){var e,r,n;n=window.Bridge.build(),e=0,r=new cnnvis.Graph,n.onFrame=function(n){var a,i,o,t,l,d,f,g,m;for(l=FingerUtils.toNormalizedFrame(n),t=d=0,g=frames.length;g>d;t=++d)for(o=frames[t],i=f=0,m=o.length;m>f;i=++f)a=o[i],r.add(e,l[t][i]);return e++,console.log("Frame: "+JSON.stringify(l))},r.drawSelf(document.getElementById("graph"))}).call(this);
+//# sourceMappingURL=./bridgetest.js.map
