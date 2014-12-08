@@ -20,7 +20,7 @@
 
   window.Bridge.parseFinger = function(finger) {
     var pointable, tipPosition;
-    pointable = parsePointable(finger);
+    pointable = Bridge.parsePointable(finger);
     tipPosition = finger.tipPosition;
     pointable['type'] = Bridge.fingerNameMap[finger.type];
     return pointable;
@@ -43,9 +43,7 @@
         _ref1 = frame.fingers;
         for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
           finger = _ref1[_j];
-          if (finger.IsValid) {
-            handFingers.push(Bridge.parseFinger(finger));
-          }
+          handFingers.push(Bridge.parseFinger(finger));
         }
         allFingers.push(handFingers);
       }
@@ -54,9 +52,7 @@
       _ref2 = frame.tools;
       for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
         tool = _ref2[_k];
-        if (tool.IsValid) {
-          allTools.push(Bridge.parsePointable(tool));
-        }
+        allTools.push(Bridge.parsePointable(tool));
       }
       allPositions['tools'] = allTools;
       if (_t.onFrame) {

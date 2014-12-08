@@ -1,2 +1,2 @@
-(function(){var i;i=window.Bridge.build(),console.log("Our bridge: "+JSON.stringify(i)),i.onFrame=function(i){return console.log("Positions: "+JSON.stringify(i))}}).call(this);
+(function(){var i;i=window.Bridge.build(),console.log("Our bridge: "+JSON.stringify(i)),i.onFrame=function(i){var r;return r=FingerUtils.toFrame(i),console.log("Frame: "+JSON.stringify(r))}}).call(this);
 //# sourceMappingURL=./bridgetest.map
