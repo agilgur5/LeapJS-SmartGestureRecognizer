@@ -1,4 +1,4 @@
-Leap = require './leaplib'
+Leap = require './leap.min'
 
 Bridge = Bridge || {}
 Bridge.fingerNameMap = ["thumb", "index", "middle", "ring", "pinky"]
@@ -24,12 +24,12 @@ Bridge.build = ->
     for hand in frame.hands
       handFingers = []
       for finger in frame.fingers
-        handFingers.push(_t.parseFinger(finger)) if finger.valid()
+        handFingers.push(Bridge.parseFinger(finger)) if finger.valid()
       allFingers.push(handFingers)
     allPositions['fingers'] = allFingers
     allTools = []
     for tool in frame.tools
-      allTools.push(_t.parsePointable(tool)) if tool.valid()
+      allTools.push(Bridge.parsePointable(tool)) if tool.valid()
     allPositions['tools'] = allTools
     _t.onFrame(allPositions) if _t.onFrame
 
@@ -41,8 +41,6 @@ Bridge.build = ->
     useAllPlugins: false
   }
   Leap.loop(controllerOpts, _onFrame)
-  #controller.connect()
-  #controller.on('frame', _onFrame)
   return this
 
 module.exports = Bridge
