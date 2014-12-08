@@ -78,7 +78,7 @@
             boneMesh.visible = false;
             boneMesh.mass = 0;
           }
-          boneMesh.castShadow = true;
+          //boneMesh.castShadow = true;
           boneMesh.position.fromArray([0,100,0]);
           scene.add(boneMesh);
           boneMeshes.push(boneMesh);
@@ -91,7 +91,7 @@
               100
           );
         //  jointMesh.sticky = (finger.bones.length == i);
-          jointMesh.castShadow = true;
+          //jointMesh.castShadow = true;
           jointMesh.position.fromArray([0,100,0]);
           if (i === 0 && fingerIndex === 0) {
             jointMesh.visible = false;
@@ -153,7 +153,7 @@
       0
     );
     wall.position.copy(position);
-    wall.receiveShadow = true;
+    //wall.receiveShadow = true;
     this.scene.add(wall);
 
     return wall;
@@ -168,8 +168,8 @@
     );
     button.originalposition = position;
     button.position.copy(button.originalposition);
-    button.receiveShadow = true;
-    button.castShadow = true;
+    //button.receiveShadow = true;
+    //button.castShadow = true;
     this.scene.add(button);
 
     this.createLabel(text, new THREE.Vector3(0, 0, dimensions.z/2+1), 9, 0xffffff, button);
@@ -199,7 +199,7 @@
     slider.minposition = position.x - dimensions.x + slider.geometry.parameters.width*2;
     slider.maxposition = position.x + dimensions.x - slider.geometry.parameters.width*2;
     slider.position.copy(slider.originalposition);
-    slider.receiveShadow = true;
+    // slider.receiveShadow = true;
     slider.castShadow = true;
     this.scene.add(slider);
 
@@ -233,8 +233,8 @@
 //    stick.__dirtyRotation = true;
 //    stick.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, height/2, 0));
 //    stick.quaternion.multiply((new THREE.Quaternion).setFromEuler(new THREE.Euler(Math.PI/2, 0, 0)));
-    stick.receiveShadow = true;
-    stick.castShadow = true;
+    //stick.receiveShadow = true;
+    //stick.castShadow = true;
     this.createLabel(text, new THREE.Vector3(stick.originalposition.x, stick.originalposition.y - height/2 - 14, stick.originalposition.z + radius), 14, 0xffffff);
 
     stick.knob = new Physijs.SphereMesh(
@@ -243,8 +243,8 @@
         100
     );
     stick.knob.position.y = height/2;
-    stick.knob.castShadow = true;
-    stick.knob.receiveShadow = true;
+    //stick.knob.castShadow = true;
+    //stick.knob.receiveShadow = true;
     stick.add(stick.knob);
 
     this.scene.add(stick);

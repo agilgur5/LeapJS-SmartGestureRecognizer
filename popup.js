@@ -20,6 +20,7 @@ var initScene = function () {
   document.body.appendChild(window.renderer.domElement);
   window.widgets = new LeapWidgets(window.scene);
   widgets.initLeapHand();
+  widgets.initLeapHand();
   widgets.createLabel("LeapJS Widgets - Buttons", new THREE.Vector3(0, 120, -110), 16, 0xffffff);
   var counterLabel = widgets.createLabel("0", new THREE.Vector3(0, 0, -110), 16, 0xffffff);
   var wall = widgets.createWall(new THREE.Vector3(0, 0, -200), new THREE.Vector3(500, 300, 100));
