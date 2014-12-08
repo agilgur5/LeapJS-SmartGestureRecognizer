@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+
+  "name": "LeapJS - Smart Gesture Recognizer",
+  "description": "The LeapJS Smart Gesture Recognizer allows users to create their own custom gestures for the Leap Motion.",
+  "version": "0.0.0.1",
+  "icons": { 
+    "64": "hand_icon.png"
+  },
+  "browser_action": {
+    "default_icon": "hand_icon.png",
+    "default_popup": "popup.html"
+  }
+}
