@@ -1,82 +1,55 @@
-function move(node, posX, posY, posZ, rotX, rotY, rotZ) {
-  var style = node.style;
-  style.transform =
-  style.webkitTransform = 'translate3d(' + posX + 'px, ' + posY + 'px, ' + posZ + 'px) ' +
-                          'rotate3d(1, 0, 0, ' + rotX + 'deg) rotate3d(0, 0, 1, ' + rotZ + 'deg)';
-}
-
-function getNode(id, templateNode) {
-  var node  = pool[id];
-
-  if (!node) {
-    node  = templateNode.cloneNode(true);
-    node.id = id;
-    node.style.backgroundColor = randomColor();
-
-    scene.appendChild(node);
-    pool[id] = node;
-  }
-
-  return node;
-}
-
-function randomColor() {
-  return '#' + Math.floor(Math.random() * 0x1000000).toString(16);
-}
-
-var app = document.getElementById('app');
-var scene = document.getElementById('scene');
-var sphereTemplate = document.getElementById('sphere');
-var fingerTemplate = document.getElementById('finger');
-
-var pool = {};
-
-Leap.loop(function(frame) {
-  var ids = {};
-  var hands = frame.hands;
-  var pointables = frame.pointables;
-
-  for (var i = 0, hand; hand = hands[i++];) {
-    var posX = (hand.palmPosition[0] * 3);
-    var posY = (hand.palmPosition[2] * 3) - 200;
-    var posZ = (hand.palmPosition[1] * 3) - 400;
-    var rotX = (hand._rotation[2] * 90);
-    var rotY = (hand._rotation[1] * 90);
-    var rotZ = (hand._rotation[0] * 90);
-
-    var node = getNode(hand.id, sphereTemplate);
-
-    move(node, posX, posY, posZ, rotX, rotY, rotZ);
-
-    ids[hand.id] = true;
-  }
-
-  for (var i = 0, pointable; pointable = pointables[i++];) {
-    var posX = (pointable.tipPosition[0] * 3);
-    var posY = (pointable.tipPosition[2] * 3) - 200;
-    var posZ = (pointable.tipPosition[1] * 3) - 400;
-    var dirX = -(pointable.direction[1] * 90);
-    var dirY = -(pointable.direction[2] * 90);
-    var dirZ = (pointable.direction[0] * 90);
-
-    node = getNode(pointable.id, fingerTemplate);
-
-    move(node, posX, posY, posZ, dirX, dirY, dirZ);
-
-    ids[pointable.id] = true;
-  }
-
-  for (var id in pool) {
-    if (!ids[id]) {
-      scene.removeChild(pool[id]);
-      delete pool[id];
-    }
-  }
-
-  document.getElementById('showHands').addEventListener('click', function() {
-    app.className = 'show-hands';
+var initScene = function () {
+  Physijs.scripts.worker = 'physijs_worker.js';
+  window.scene = new Physijs.Scene();
+  window.scene.addEventListener('update', function() {
+    scene.simulate( undefined, 2 );
+  });
+  window.scene.setGravity({x:0,y:0,z:0});
+  window.renderer = new THREE.WebGLRenderer({
+    alpha: true
+  });
+  window.renderer.shadowMapEnabled = true;
+  window.renderer.shadowMapType = THREE.BasicShadowMap;
+  window.renderer.setClearColor(0x000000, 0);
+  window.renderer.setSize(window.innerWidth, window.innerHeight);
+  window.renderer.domElement.style.position = 'fixed';
+  window.renderer.domElement.style.top = 0;
+  window.renderer.domElement.style.left = 0;
+  window.renderer.domElement.style.width = '100%';
+  window.renderer.domElement.style.height = '100%';
+  document.body.appendChild(window.renderer.domElement);
+  window.widgets = new LeapWidgets(window.scene);
+  widgets.initLeapHand({sampleRecording: 'buttons.lz'});
+  widgets.createLabel("LeapJS Widgets - Buttons", new THREE.Vector3(0, 120, -110), 16, 0xffffff);
+  var counterLabel = widgets.createLabel("0", new THREE.Vector3(0, 0, -110), 16, 0xffffff);
+  var wall = widgets.createWall(new THREE.Vector3(0, 0, -200), new THREE.Vector3(500, 300, 100));
+  var decreaseButton = widgets.createButton("Decrease", new THREE.Vector3(-100, 0, -110), new THREE.Vector3(100, 70, 30));
+  var increaseButton = widgets.createButton("Increase", new THREE.Vector3(100, 0, -110), new THREE.Vector3(100, 70, 30));
+  decreaseButton.addEventListener('press', function(evt) {
+    counterLabel.setText(parseInt(counterLabel.getText())-1);
+  });
+  increaseButton.addEventListener('press', function(evt) {
+    counterLabel.setText(parseInt(counterLabel.getText())+1);
+  });
+  var spotLight = new THREE.SpotLight(0xffffff, 1);
+  spotLight.shadowCameraVisible = true;
+  spotLight.castShadow = true;
+  spotLight.shadowMapWidth = 6048;
+  spotLight.shadowMapHeight = 6048;
+  spotLight.shadowCameraFar = 1000;
+  spotLight.shadowDarkness = 0.5;
+  spotLight.position.fromArray([wall.position.x, wall.position.y, wall.position.z + 1000]);
+  spotLight.target.position.copy(wall.position);
+  scene.add(spotLight);
+  window.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+  window.camera.position.fromArray([0, 0, 300]);
+  window.camera.lookAt(new THREE.Vector3(0, decreaseButton.position.y, decreaseButton.position.z));
+  window.addEventListener('resize', function () {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.render(scene, camera);
   }, false);
-  document.getElementById('hideHands').addEventListener('click', function() {
-    app.className = '';
-  }, false);
-});
+  scene.add(camera);
+};
+initScene();
