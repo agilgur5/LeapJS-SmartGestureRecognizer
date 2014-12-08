@@ -172,7 +172,7 @@
     button.castShadow = true;
     this.scene.add(button);
 
-    this.createLabel(text, new THREE.Vector3(0, 0, dimensions.z/2+1), 14, 0xffffff, button);
+    this.createLabel(text, new THREE.Vector3(0, 0, dimensions.z/2+1), 9, 0xffffff, button);
 
     button.sliderConstraint = new Physijs.SliderConstraint(
       button,

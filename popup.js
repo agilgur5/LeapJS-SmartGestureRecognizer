@@ -19,12 +19,12 @@ var initScene = function () {
   window.renderer.domElement.style.height = '100%';
   document.body.appendChild(window.renderer.domElement);
   window.widgets = new LeapWidgets(window.scene);
-  widgets.initLeapHand({sampleRecording: 'buttons.lz'});
+  widgets.initLeapHand();
   widgets.createLabel("LeapJS Widgets - Buttons", new THREE.Vector3(0, 120, -110), 16, 0xffffff);
   var counterLabel = widgets.createLabel("0", new THREE.Vector3(0, 0, -110), 16, 0xffffff);
   var wall = widgets.createWall(new THREE.Vector3(0, 0, -200), new THREE.Vector3(500, 300, 100));
-  var decreaseButton = widgets.createButton("Decrease", new THREE.Vector3(-100, 0, -110), new THREE.Vector3(100, 70, 30));
-  var increaseButton = widgets.createButton("Increase", new THREE.Vector3(100, 0, -110), new THREE.Vector3(100, 70, 30));
+  var decreaseButton = widgets.createButton("Decrease", new THREE.Vector3(-100, 0, -60), new THREE.Vector3(70, 40, 5));
+  var increaseButton = widgets.createButton("Increase", new THREE.Vector3(100, 0, -60), new THREE.Vector3(70, 40, 5));
   decreaseButton.addEventListener('press', function(evt) {
     counterLabel.setText(parseInt(counterLabel.getText())-1);
   });
