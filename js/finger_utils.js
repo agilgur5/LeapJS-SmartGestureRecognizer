@@ -1,0 +1,1 @@
+(function(){window.FingerUtils={toFrame:function(n){var t,i,r;return t=n.fingers,i=[].concat.apply([],t),console.log("Flattened fingers: "+JSON.stringify(i)),r=i.map(function(n){return[n.x,n.y,n.z]})}}}).call(this);

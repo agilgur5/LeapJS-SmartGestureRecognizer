@@ -1,1 +1,1 @@
-{"version":3,"file":"bridgetest.js","sources":["../bridgetest.coffee"],"names":[],"mappings":"CAEA,WAAA,GAAA,EAAA,GAAY,OAAO,OAAO,QAC1B,QAAQ,IAAI,eAAiB,KAAK,UAAU,IAC5C,EAAU,QAAU,SAAC,SACnB,SAAQ,IAAI,cAAgB,KAAK,UAAU","sourceRoot":"./../"}
+{"version":3,"file":"bridgetest.js","sources":["../bridgetest.coffee"],"names":[],"mappings":"CAEA,WAAA,GAAA,EAAA,GAAY,OAAO,OAAO,QAC1B,QAAQ,IAAI,eAAiB,KAAK,UAAU,IAC5C,EAAU,QAAU,SAAC,GAEnB,GAAA,SAAA,GAAQ,YAAY,QAAQ,GAC5B,QAAQ,IAAI,UAAY,KAAK,UAAU","sourceRoot":"./../"}
