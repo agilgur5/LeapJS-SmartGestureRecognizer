@@ -12,7 +12,12 @@ window.Bridge.parsePointable = (thing) ->
   }
 window.Bridge.parseFinger = (finger) ->
   pointable = Bridge.parsePointable(finger)
-  tipPosition = finger.tipPosition
+  bones = finger.bones
+  boneBases = bones.map((bone) -> bone.basis)
+  pointable['bones'] = boneBases
+  pointable['dip'] = finger.dipPosition
+  pointable['mcp'] = finger.mcpPosition
+  pointable['pip'] = finger.pipPosition
   pointable['type'] = Bridge.fingerNameMap[finger.type]
   return pointable
 window.Bridge.build = ->
