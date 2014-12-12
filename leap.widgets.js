@@ -187,80 +187,6 @@
     return button;
   };
 
-  LeapWidgets.prototype.createSlider = function(text, initial, position, dimensions) {
-    var slider = new Physijs.BoxMesh(
-      new THREE.BoxGeometry(50, dimensions.y, dimensions.z),
-      Physijs.createMaterial(new THREE.MeshPhongMaterial({
-        color: BUTTON_COLOR
-      }), 1, 0),
-      350
-    );
-    slider.originalposition = new THREE.Vector3(position.x, position.y, position.z);
-    slider.minposition = position.x - dimensions.x + slider.geometry.parameters.width*2;
-    slider.maxposition = position.x + dimensions.x - slider.geometry.parameters.width*2;
-    slider.position.copy(slider.originalposition);
-    // slider.receiveShadow = true;
-    slider.castShadow = true;
-    this.scene.add(slider);
-
-//    this.createLabel(text, new THREE.Vector3(0, 0, dimensions.z/2+1), 14, 0xffffff, slider);
-
-    slider.sliderConstraint = new Physijs.SliderConstraint(
-      slider,
-      null,
-      new THREE.Vector3().copy(slider.originalposition),
-      new THREE.Vector3(0, 1, 0)
-    );
-    this.scene.addConstraint(slider.sliderConstraint);
-    slider.sliderConstraint.setLimits(-dimensions.x/2, dimensions.x/2, 0, 0);
-    slider.position.x = slider.minposition +  (slider.maxposition - slider.minposition) * (initial/100);
-    slider.__dirtyPosition = true;
-    this.sliders.push(slider);
-    return slider;
-  };
-
-  LeapWidgets.prototype.createSwitch = function(text, position, radius, height) {
-    var stick = new Physijs.BoxMesh(
-      new THREE.CylinderGeometry(radius, radius, height),
-      Physijs.createMaterial(new THREE.MeshPhongMaterial({
-        color: BUTTON_COLOR
-      }), 1, 0.9),
-      1
-    );
-    stick.originalposition = position;
-    stick.position.copy(stick.originalposition);
-//    stick.rotation.x = Math.PI*0.5;
-//    stick.__dirtyRotation = true;
-//    stick.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, height/2, 0));
-//    stick.quaternion.multiply((new THREE.Quaternion).setFromEuler(new THREE.Euler(Math.PI/2, 0, 0)));
-    //stick.receiveShadow = true;
-    //stick.castShadow = true;
-    this.createLabel(text, new THREE.Vector3(stick.originalposition.x, stick.originalposition.y - height/2 - 14, stick.originalposition.z + radius), 14, 0xffffff);
-
-    stick.knob = new Physijs.SphereMesh(
-        new THREE.SphereGeometry(32, 32, 16),
-        Physijs.createMaterial(new THREE.MeshPhongMaterial({color: 0xcc1122}), 0, 0),
-        100
-    );
-    stick.knob.position.y = height/2;
-    //stick.knob.castShadow = true;
-    //stick.knob.receiveShadow = true;
-    stick.add(stick.knob);
-
-    this.scene.add(stick);
-
-    var point = new Physijs.PointConstraint(
-      stick,
-      null,
-      new THREE.Vector3(stick.position.x, stick.position.y - height/2, stick.position.z)
-    );
-    this.scene.addConstraint(point);
-  //  point.setLimits(-150, -150, 0, 0);
-  //  point.setRestitution(0, 0);
-    this.switches.push(stick);
-    return stick;
-  };
-
   LeapWidgets.prototype.createLabel = function(text, position, size, color, addTo) {
     var hexpadding = "#000000";
     var canvas = document.createElement("canvas");
@@ -322,31 +248,6 @@
           button.dispatchEvent('pressed', {target: button});
       }
       button.lastPressed = pressed;
-    });
-    this.switches.forEach(function(stick) {
-      stick.setLinearVelocity(new THREE.Vector3(0,1000,0));
-      stick.setAngularVelocity(new THREE.Vector3(0,0,0));
-      var impact = Math.pow(stick.position.z-stick.originalposition.z, 2) + Math.pow(stick.position.x-stick.originalposition.x, 2);
-      var impactThreshold = 2;
-      stick.knob.material.color.setHex(impact > impactThreshold ? KNOB_COLOR_ACTIVE : KNOB_COLOR);
-      if (impact > impactThreshold) {
-          var angle = Math.atan2(stick.position.z, stick.position.x) + Math.PI/2;
-          if (angle > Math.PI) {
-              angle -= Math.PI * 2;
-          }
-          stick.dispatchEvent('control', {target: stick, angle: angle, impact: impact});
-      }
-      if (impact <= impactThreshold && stick.lastImpact > impactThreshold) {
-          stick.dispatchEvent('reset', {target: stick});
-      }
-      stick.lastImpact = impact;
-    });
-    this.sliders.forEach(function(slider) {
-      var value = Math.min(1, Math.max(0, Math.round((slider.position.x - slider.minposition) * 1000 / (slider.maxposition - slider.minposition)) / 1000));
-      if (slider.lastvalue != value) {
-          slider.dispatchEvent('change', {value: value});
-      }
-      slider.lastvalue = value;
     });
   };
 })();
