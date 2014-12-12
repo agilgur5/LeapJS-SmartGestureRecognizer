@@ -29,7 +29,8 @@
           return {
             x: finger.x - hand.x,
             y: finger.y - hand.y,
-            z: finger.z - hand.z
+            z: finger.z - hand.z,
+            bones: finger.bones
           };
         });
         fingers.push(normalizedFingers);

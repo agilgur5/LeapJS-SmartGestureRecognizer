@@ -10,7 +10,7 @@
 
   ourBridge.onFrame = function(allPositions) {
     var finger, frame, _i, _len;
-    frame = FingerUtils.toFrame(allPositions);
+    frame = FingerUtils.toNormalizedFrame(allPositions);
     for (_i = 0, _len = frame.length; _i < _len; _i++) {
       finger = frame[_i];
       graph.add(count, finger[0]);
