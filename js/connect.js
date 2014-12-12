@@ -26,6 +26,9 @@
       return bone.basis;
     });
     pointable['bones'] = boneBases;
+    pointable['dip'] = finger.dipPosition;
+    pointable['mcp'] = finger.mcpPosition;
+    pointable['pip'] = finger.pipPosition;
     pointable['type'] = Bridge.fingerNameMap[finger.type];
     return pointable;
   };
