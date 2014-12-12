@@ -5,12 +5,10 @@ count = 0
 graph = new cnnvis.Graph()
 ourBridge.onFrame = (allPositions) ->
   frame = FingerUtils.toNormalizedFrame(allPositions)
+  #frame = FingerUtils.toFrame(allPositions)
+  #console.log('Frame: ' + JSON.stringify(frame))
+  for finger in frame
+    graph.add(count, finger[0])
+    graph.drawSelf(document.getElementById('graph'))
 
-  for finger, finger_index in frames
-    for cord, cord_index in finger
-      graph.add(count, frame[finger_index][cord_index])
-
-  count++
-  console.log('Frame: ' + JSON.stringify(frame))
-
-graph.drawSelf(document.getElementById("graph"));
+  count += 5
