@@ -1,56 +1,156 @@
-var initScene = function () {
-  Physijs.scripts.worker = 'physijs_worker.js';
-  window.scene = new Physijs.Scene();
-  window.scene.addEventListener('update', function() {
-    scene.simulate( undefined, 2 );
-  });
-  window.scene.setGravity({x:0,y:0,z:0});
-  window.renderer = new THREE.WebGLRenderer({
-    alpha: true
-  });
-  window.renderer.shadowMapEnabled = true;
-  window.renderer.shadowMapType = THREE.BasicShadowMap;
-  window.renderer.setClearColor(0x000000, 0);
-  window.renderer.setSize(window.innerWidth, window.innerHeight);
-  window.renderer.domElement.style.position = 'fixed';
-  window.renderer.domElement.style.top = 0;
-  window.renderer.domElement.style.left = 0;
-  window.renderer.domElement.style.width = '100%';
-  window.renderer.domElement.style.height = '100%';
-  document.body.appendChild(window.renderer.domElement);
-  window.widgets = new LeapWidgets(window.scene);
-  widgets.initLeapHand();
-  widgets.initLeapHand();
-  widgets.createLabel("LeapJS Widgets - Buttons", new THREE.Vector3(0, 120, -110), 16, 0xffffff);
-  var counterLabel = widgets.createLabel("0", new THREE.Vector3(0, 0, -110), 16, 0xffffff);
-  var wall = widgets.createWall(new THREE.Vector3(0, 0, -200), new THREE.Vector3(500, 300, 100));
-  var decreaseButton = widgets.createButton("Decrease", new THREE.Vector3(-100, 0, -60), new THREE.Vector3(70, 40, 5));
-  var increaseButton = widgets.createButton("Increase", new THREE.Vector3(100, 0, -60), new THREE.Vector3(70, 40, 5));
-  decreaseButton.addEventListener('press', function(evt) {
-    counterLabel.setText(parseInt(counterLabel.getText())-1);
-  });
-  increaseButton.addEventListener('press', function(evt) {
-    counterLabel.setText(parseInt(counterLabel.getText())+1);
-  });
-  var spotLight = new THREE.SpotLight(0xffffff, 1);
-  spotLight.shadowCameraVisible = true;
-  spotLight.castShadow = true;
-  spotLight.shadowMapWidth = 6048;
-  spotLight.shadowMapHeight = 6048;
-  spotLight.shadowCameraFar = 1000;
-  spotLight.shadowDarkness = 0.5;
-  spotLight.position.fromArray([wall.position.x, wall.position.y, wall.position.z + 1000]);
-  spotLight.target.position.copy(wall.position);
-  scene.add(spotLight);
-  window.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-  window.camera.position.fromArray([0, 0, 300]);
-  window.camera.lookAt(new THREE.Vector3(0, decreaseButton.position.y, decreaseButton.position.z));
-  window.addEventListener('resize', function () {
+if ( window.innerWidth === 0 ) { window.innerWidth = parent.innerWidth; window.innerHeight = parent.innerHeight; }
+
+  // Global Variables for THREE.JS
+  var container , camera, scene, renderer , stats;
+  // Global variable for leap
+  var frame, controller;
+
+  // Setting up how big we want the scene to be
+  var sceneSize = 100;
+  var leftHand , rightHand;
+
+
+  // Get everything set up
+  init();
+  // Start the frames rolling
+  animate();
+
+
+  function init(){
+
+    controller = new Leap.Controller();
+    scene = new THREE.Scene();
+    
+    camera = new THREE.PerspectiveCamera( 
+      50 ,
+      window.innerWidth / window.innerHeight,
+      sceneSize / 100 ,
+      sceneSize * 4
+    );
+    // placing our camera position so it can see everything
+    camera.position.z = sceneSize;
+
+    // Getting the container in the right location
+    container = document.createElement( 'div' );
+    container.style.width      = '100%';
+    container.style.height     = '100%';
+    container.style.background = '#000';
+    document.body.appendChild( container );
+
+    // Setting up our Renderer
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    container.appendChild( renderer.domElement );
+
+    // Making sure our renderer is always the right size
+    window.addEventListener( 'resize', onWindowResize , false );    
+   
+    leftHand = new ConnectedHand( controller );
+    leftHand.addToScene( scene );
+    rightHand = new ConnectedHand( controller );
+    rightHand.addToScene( scene );
+    
+    var geo = new THREE.IcosahedronGeometry( 2 , 1 );
+    var mat = new THREE.MeshNormalMaterial();
+    var joint = new THREE.Object3D();
+    var mesh = new THREE.Mesh(geo ,  mat );
+    joint.add( mesh );
+
+   
+    var connection = new THREE.Object3D();
+    var squisher = new THREE.Object3D();
+    var mat = new THREE.LineBasicMaterial();
+    mat.color.setHSL( .0 , .9 , .6 );
+
+    var line = createFlatCircle( -40 , 20 , 20 , mat );
+    squisher.add( line );
+    var line = createFlatCircle( -40 , 10 , 20 , mat );
+    squisher.add( line );
+    
+    var mat = new THREE.LineBasicMaterial();
+    mat.color.setHSL( .05 , .9 , .6 );
+    var line = createFlatCircle( -15 , 15 , 20 , mat );
+    squisher.add( line );
+    var line = createFlatCircle( -15 , 12 , 20 , mat );
+    squisher.add( line );
+
+
+    var mat = new THREE.LineBasicMaterial();
+    mat.color.setHSL( .1 , .9 , .6 );
+    var line = createFlatCircle( 5 , 10 , 20 , mat );
+    squisher.add( line );
+    var line = createFlatCircle( 5 , 8 , 20 , mat );
+    squisher.add( line );
+
+    var mat = new THREE.LineBasicMaterial();
+    mat.color.setHSL( .1 , .9 , .6 );
+    var line = createFlatCircle( 30 , 6 , 20 , mat );
+    squisher.add( line );
+    var line = createFlatCircle( 30 , 4 , 20 , mat );
+    squisher.add( line );
+
+    squisher.scale.y = .01;
+    squisher.scale.x = .12;
+    squisher.scale.z = .12;
+
+    connection.add( squisher );
+
+    palm = new THREE.Object3D();
+
+    for( var i = 0; i < 8; i++ ){
+      var mat = new THREE.LineBasicMaterial();
+      mat.color.setHSL( .4 + ( i * .01 ) , .9 , .6 );
+      var line = createFlatCircle( -1  , 4  , 20 , mat );
+      line.position.x = Math.cos(Math.PI * (i) / 4) * (6);
+      line.position.z = Math.sin(Math.PI * (i) / 4) * (6);
+      palm.add( line );
+    }
+
+    leftHand.createFingers( joint , connection );
+    leftHand.createPalm( joint , connection , palm );
+
+    rightHand.createFingers( joint , connection );
+    rightHand.createPalm( joint , connection , palm );
+
+    controller.connect();
+  }
+
+  function createCircleGeo( radius , count ){
+    var geometry = new THREE.Geometry();
+    for( var i = 0; i <= count; i++ ){
+      var t = ( i / count ) * Math.PI * 2;
+      v = new THREE.Vector3(
+        Math.cos( t ) * radius,
+        0,
+        Math.sin( t ) * radius
+      );
+      geometry.vertices.push( v );
+    }
+
+    return geometry;
+  }
+
+  function createFlatCircle( y , radius , count , mat ){
+    var geo = createCircleGeo( radius , count );
+    var line = new THREE.Line( geo , mat );
+    line.rotation.x = Math.PI //2;
+    line.position.y = y;
+    return line;
+  }
+
+  function animate(){
+    // Tells us which hand to update with
+    leftHand.update( 'left' );
+    rightHand.update( 'right' );
+
+    renderer.render( scene , camera );
+    requestAnimationFrame( animate );
+  }
+
+  // Resets the renderer to be the proper size
+  function onWindowResize(){
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.render(scene, camera);
-  }, false);
-  scene.add(camera);
-};
-initScene();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+  }
