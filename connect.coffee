@@ -12,7 +12,10 @@ window.Bridge.parsePointable = (thing) ->
   }
 window.Bridge.parseFinger = (finger) ->
   pointable = Bridge.parsePointable(finger)
-  tipPosition = finger.tipPosition
+  bones = finger.bones
+  boneBases = bones.map((bone) -> bone.basis)
+  pointable['bones'] = boneBases
+  #console.log('Bone bases: ' + JSON.stringify(boneBases))
   pointable['type'] = Bridge.fingerNameMap[finger.type]
   return pointable
 window.Bridge.build = ->
@@ -38,6 +41,7 @@ window.Bridge.build = ->
     for tool in frame.tools
       allTools.push(Bridge.parsePointable(tool))
     allPositions['tools'] = allTools
+    #console.log('All positions: ' + JSON.stringify(allPositions))
     _t.onFrame(allPositions) if _t.onFrame
 
   controllerOpts = {
