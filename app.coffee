@@ -1,9 +1,8 @@
 GestureList = React.createClass
   render: ->
-    listItems = @props.gestures.map((gesture) ->
+    listItems = @props.gestures.map (gesture) ->
       React.DOM.li
         children: gesture
-    )
     React.DOM.ul
       children: listItems
 
@@ -21,7 +20,7 @@ App = React.createClass
       '5 Finger Spread'
       '5 Finger Pinch'
     ]
-    return { gestures: gestures }
+    return gestures: gestures
   render: ->
     React.DOM.section
       children: [

@@ -37,7 +37,6 @@
             bonePosition.y -= (opts['translateY'] || 130) * scale;
             bonePosition.x += (opts['translateX'] || 0) * scale;
             bonePosition.z += (opts['translateZ'] || 80) * scale;
-            mesh.setLinearVelocity(bonePosition.sub(mesh.position).multiplyScalar(16));
             mesh.setRotationFromMatrix(new THREE.Matrix4().fromArray(bone.matrix()));
             mesh.quaternion.multiply(baseBoneRotation);
             mesh.__dirtyRotation = true;
@@ -48,8 +47,6 @@
             var jointPosition = new THREE.Vector3().fromArray(bone ? bone.prevJoint : finger.bones[i-1].nextJoint).multiplyScalar(scale);
             jointPosition.y -= 130 * scale;
             jointPosition.z += 80 * scale;
-            mesh.setLinearVelocity(jointPosition.sub(mesh.position).multiplyScalar(20));
-            mesh.setAngularVelocity(new THREE.Vector3());
           });
 
         });
@@ -68,31 +65,28 @@
 
         finger.bones.forEach(function(bone, boneIndex) {
           var boneWidth = bone.width || boneWidthDefault;
-          var boneMesh = new Physijs.CylinderMesh(
+          var boneMesh = new THREE.Mesh(
               new THREE.CylinderGeometry(boneWidth/2 * scale, boneWidth/2 * scale, (bone.length - boneWidth) * scale),
-              Physijs.createMaterial(new THREE.MeshPhongMaterial(), 0, 0),
-              100
+              new THREE.MeshPhongMaterial()
           );
           // TODO: why does the thumb have this extra bone? Removing it
           if (boneIndex === 0 && fingerIndex === 0) {
             boneMesh.visible = false;
             boneMesh.mass = 0;
           }
-          //boneMesh.castShadow = true;
-          boneMesh.position.fromArray([0,100,0]);
+          //boneMesh.position.fromArray([0,100,0]);
           scene.add(boneMesh);
           boneMeshes.push(boneMesh);
         });
 
         for (var i = 0; i < finger.bones.length + 1; i++) {
-          var jointMesh = new Physijs.SphereMesh(
+          var jointMesh = new THREE.Mesh(
               new THREE.SphereGeometry(((finger.bones[i] || finger.bones[i-1]).width || boneWidthDefault)/2 * scale, 16),
-              Physijs.createMaterial(new THREE.MeshPhongMaterial(), 0, 0),
-              100
+              new THREE.MeshPhongMaterial()
           );
         //  jointMesh.sticky = (finger.bones.length == i);
           //jointMesh.castShadow = true;
-          jointMesh.position.fromArray([0,100,0]);
+          //jointMesh.position.fromArray([0,100,0]);
           if (i === 0 && fingerIndex === 0) {
             jointMesh.visible = false;
             jointMesh.mass = 0;
@@ -145,12 +139,11 @@
   };
 
   LeapWidgets.prototype.createWall = function(position, dimensions) {
-    var wall = new Physijs.BoxMesh(
+    var wall = new THREE.Mesh(
       new THREE.BoxGeometry(dimensions.x, dimensions.y, dimensions.z),
-      Physijs.createMaterial(new THREE.MeshPhongMaterial({
+      new THREE.MeshPhongMaterial({
         color: BACKGROUND_COLOR
-      }), 1, 0.9),
-      0
+      })
     );
     wall.position.copy(position);
     //wall.receiveShadow = true;
@@ -159,12 +152,11 @@
     return wall;
   };
   LeapWidgets.prototype.createButton = function(text, position, dimensions) {
-    var button = new Physijs.BoxMesh(
+    var button = new THREE.Mesh(
       new THREE.BoxGeometry(dimensions.x, dimensions.y, dimensions.z),
-      Physijs.createMaterial(new THREE.MeshPhongMaterial({
+      new THREE.MeshPhongMaterial({
         color: BUTTON_COLOR
-      }), 1, 0.9),
-      100
+      })
     );
     button.originalposition = position;
     button.position.copy(button.originalposition);
@@ -174,15 +166,6 @@
 
     this.createLabel(text, new THREE.Vector3(0, 0, dimensions.z/2+1), 9, 0xffffff, button);
 
-    button.sliderConstraint = new Physijs.SliderConstraint(
-      button,
-      null,
-      new THREE.Vector3(0, 0, -200),
-      new THREE.Vector3(0, Math.sqrt(2), Math.sqrt(2))
-    );
-    this.scene.addConstraint(button.sliderConstraint);
-    button.sliderConstraint.setLimits(-150, 0, 0, 0);
-  //      button.sliderConstraint.setRestitution(0, 0);
     this.buttons.push(button);
     return button;
   };
@@ -238,7 +221,6 @@
 
   LeapWidgets.prototype.update = function() {
     this.buttons.forEach(function(button) {
-      button.setLinearVelocity(new THREE.Vector3().copy(button.originalposition).sub(button.position).multiplyScalar(16));
       var pressed = button.position.z+5 < button.originalposition.z;
       button.material.color.setHex(pressed ? BUTTON_COLOR_PRESSED : BUTTON_COLOR);
       if (!button.lastPressed && pressed) {
