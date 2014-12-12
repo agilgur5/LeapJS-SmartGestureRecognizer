@@ -8,7 +8,16 @@ var learner = {};
 learner.train_data = [];
 learner.train_labels = [];  
 learner.currentThreadID = -1;
-learner.currentNet = {};
+learner.currentNet = null;
+
+/*
+  @param train_data a convnetjs.Vol() (a 2D array of numbers)
+  @param train_label a number corresponding to train_data
+*/  
+learner.addInstanceData = function(train_data, train_labels) {
+  this.train_data.push(train_data);  
+  this.train_labels.push(train_label);
+}
 
 /*
   @param train_data an array of convnetjs.Vol() (a 3D array of numbers)
@@ -21,7 +30,6 @@ learner.addData = function(train_data, train_labels) {
     this.train_labels.splice(this.train_labels.length, 0, train_labels[i]);
   }
 }
-
 
 /* 
   takes in a dictionary of options, and a callback for when the current batch is complete
@@ -43,10 +51,9 @@ learner.createMagicNet = function(opts, callback) {
 /* 
   takes in a MagicNet and a 2D array of data, outputting the predicted label for that data
 
-  @param magicNet a MagicNet object
   @param data a 2D array of numbers
   @return the predicted label, a number corresponding to one from train_labels
 */
 learner.predictLabel = function(data) {
-  return magicNet.predict(data);
+  return this.currentNet.predict(data);
 }

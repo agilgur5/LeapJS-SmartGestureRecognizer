@@ -1,0 +1,13 @@
+{
+  "name": "LeapJS_Smart_Gesture_Recognizer",
+  "devDependencies": {
+    "browserify": "~6.2.0",
+    "coffee-reactify": "~2.0.0",
+    "watchify": "~2.1.1"
+  },
+  "browserify": {
+    "transform": [
+      "coffee-reactify"
+    ]
+  }
+}
