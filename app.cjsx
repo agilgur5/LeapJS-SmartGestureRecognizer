@@ -1,8 +1,8 @@
 GestureList = React.createClass
   render: ->
     listItems = @props.labels.map (label) ->
-      <li>{label}</li>
-    return <ul>{listItems}</ul>
+      <li class="gesture_label">{label}</li>
+    return <ul id="gesture_list">{listItems}</ul>
 
 App = React.createClass
   bridge: {}
@@ -12,13 +12,13 @@ App = React.createClass
     @bridge.onFrame = (frame) ->
       normalizedFrame = FingerUtils.toNormalizedFrame(frame)
       if _this.state.isRecording
-        learner.addInstanceData(normalizedFrame, _this.state.currentLabel)
+        learner.addDatapoint(normalizedFrame, _this.state.currentLabel)
       else if learner.currentNet?
         labelIndex = learner.predictLabel(normalizedFrame)
         _this.setState(prediction: _this.state.labels[labelIndex])
   startRecording: ->
     if @state.isRecording
-      learner.createMagicNet({}, () -> return)
+      learner.createNet()
       @setState(isRecording: false)
     else
       name = prompt("What gesture is this?", "Finger Tap")
@@ -31,14 +31,14 @@ App = React.createClass
         else
           @setState(isRecording: true, @state.labels.concat(["" + name]), currentLabel: @state.labels.length)
   getInitialState: ->
-    return isRecording: false, currentLabel: 0, labels: ["rest", "nothing"], prediction: "Prediction goes here"
+    return isRecording: false, currentLabel: 0, labels: ["nothing", "rest"], prediction: "Prediction goes here"
   render: ->
     <section>
       {GestureList(labels: @state.labels)}
-      <button id="record" onClick={@startRecording}>
+      <button id="record_button" onClick={@startRecording}>
         {if @state.isRecording then "Stop Recording" else "Start Recording"}
       </button>
-      <div id="predicted_label">{@state.prediction}</div>
+      <div id="predicted_label_div">{@state.prediction}</div>
     </section>
     
 React.render(App(), document.getElementById('content'))
