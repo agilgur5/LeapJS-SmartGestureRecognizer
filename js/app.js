@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var App, GestureDetails, GestureList;
+var App, GestureActions, GestureDetails, GestureList;
 
 GestureList = React.createClass({
   render: function() {
@@ -27,6 +27,38 @@ GestureList = React.createClass({
     return React.createElement("ul", {
       "id": "gesture_list"
     }, listItems);
+  }
+});
+
+GestureActions = React.createClass({
+  render: function() {
+    return React.createElement("ul", {
+      "className": 'GestureActions'
+    }, React.createElement("li", null, React.createElement("button", {
+      "type": 'button',
+      "className": (this.props.currentAction === 'printName' ? 'Selected' : ''),
+      "onClick": this.props.setAction,
+      "data-index": this.props.index,
+      "data-action": 'printName'
+    }, "Show name")), React.createElement("li", null, React.createElement("button", {
+      "type": 'button',
+      "className": (this.props.currentAction === 'prevTab' ? 'Selected' : ''),
+      "onClick": this.props.setAction,
+      "data-index": this.props.index,
+      "data-action": 'prevTab'
+    }, "Prev. tab")), React.createElement("li", null, React.createElement("button", {
+      "type": 'button',
+      "className": (this.props.currentAction === 'nextTab' ? 'Selected' : ''),
+      "onClick": this.props.setAction,
+      "data-index": this.props.index,
+      "data-action": 'nextTab'
+    }, "Next tab")), React.createElement("li", null, React.createElement("button", {
+      "type": 'button',
+      "className": (this.props.currentAction === 'fistbump' ? 'Selected' : ''),
+      "onClick": this.props.setAction,
+      "data-index": this.props.index,
+      "data-action": 'fistbump'
+    }, "Fistbump")));
   }
 });
 
@@ -60,6 +92,10 @@ GestureDetails = React.createClass({
       "onChange": this.handleChange,
       "data-index": this.props.index,
       "ref": 'gestureNameField'
+    }), React.createElement("h3", null, "Gesture action:"), GestureActions({
+      setAction: this.props.setAction,
+      index: this.props.index,
+      currentAction: this.props.actions[this.props.index]
     }));
   }
 });
@@ -71,7 +107,7 @@ App = React.createClass({
     this.bridge = window.Bridge.build();
     _this = this;
     return this.bridge.onFrame = function(frame) {
-      var labelIndex, normalizedFrame;
+      var action, labelIndex, normalizedFrame;
       normalizedFrame = FingerUtils.toNormalizedFrame(frame);
       console.log("onframe");
       if (_this.state.isRecording) {
@@ -80,6 +116,10 @@ App = React.createClass({
         labelIndex = learner.predictLabel(normalizedFrame);
         console.log("predicting");
         _this.flashElement(document.getElementsByClassName('gesture_label')[labelIndex]);
+        action = _this.state.actions[labelIndex];
+        if (action) {
+          this[action]();
+        }
         return _this.setState({
           prediction: _this.state.labels[labelIndex]
         });
@@ -120,7 +160,8 @@ App = React.createClass({
     gestureIndex = labels.length - 1;
     return this.setState({
       labels: labels,
-      selectedGesture: gestureIndex
+      selectedGesture: gestureIndex,
+      isEditingGestures: true
     });
   },
   selectGesture: function(e) {
@@ -131,10 +172,30 @@ App = React.createClass({
       selectedGesture: selectedGesture
     });
   },
+  printName: function(e) {
+    var index, name;
+    index = parseInt(e.target.getAttribute('data-index'), 10);
+    name = this.state.labels[index];
+    return document.getElementById('log').innerHTML = '<strong>Gesture:</strong> ' + name;
+  },
+  prevTab: function() {},
+  nextTab: function() {},
+  fistbump: function() {},
+  setAction: function(e) {
+    var action, actions, index;
+    action = e.target.getAttribute('data-action');
+    index = parseInt(e.target.getAttribute('data-index'), 10);
+    actions = this.state.actions;
+    actions[index] = action;
+    return this.setState({
+      actions: actions
+    });
+  },
   getInitialState: function() {
     return {
       isRecording: false,
       currentLabel: 0,
+      actions: [null, null, null],
       labels: ["rest", "finger point", "fist"],
       prediction: "Prediction goes here",
       isEditingGestures: false,
@@ -171,7 +232,9 @@ App = React.createClass({
     details = this.state.selectedGesture >= 0 ? GestureDetails({
       name: this.state.labels[this.state.selectedGesture],
       index: this.state.selectedGesture,
-      setGestureName: this.setGestureName
+      setGestureName: this.setGestureName,
+      setAction: this.setAction,
+      actions: this.state.actions
     }) : React.createElement("p", {
       "id": 'nothingSelected'
     }, "Nothing selected");
@@ -184,13 +247,13 @@ App = React.createClass({
       selectGesture: this.selectGesture
     }), React.createElement("article", {
       "id": 'actions'
-    }, startButton, details), React.createElement("aside", {
+    }, details, startButton), React.createElement("aside", {
       "id": 'action_buttons'
     }, React.createElement("button", {
       "id": 'import'
-    }, "Import training data"), React.createElement("button", {
+    }, "Import data"), React.createElement("button", {
       "id": 'export'
-    }, "Export training data")));
+    }, "Export data")));
   }
 });
 
