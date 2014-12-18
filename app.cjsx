@@ -56,6 +56,13 @@ App = React.createClass
     @setState({ selectedGesture: selectedGesture })
   getInitialState: ->
     return isRecording: false, currentLabel: 0, labels: ["rest", "finger point", "fist"], prediction: "Prediction goes here", isEditingGestures: false, selectedGesture: -1
+  flashElement: (e) ->
+    e.className = 'gesture_label Selected'
+    setTimeout((-> e.className = 'gesture_label'), 250)
+    setTimeout((-> e.className = 'gesture_label Selected'), 500)
+    setTimeout((-> e.className = 'gesture_label'), 750)
+  componentDidMount: ->
+    setTimeout((-> @flashElement(document.getElementsByClassName('gesture_label')[0])).bind(this), 300)
   render: ->
     startButton = if @state.isEditingGestures then <button id='record_button' onClick={@startRecording}>{if @state.isRecording then 'Stop recording' else 'Start recording'}</button> else ''
     details = if @state.selectedGesture >= 0 then GestureDetails(name: @state.labels[@state.selectedGesture]) else <p id='nothingSelected'>Nothing selected</p>

@@ -107,6 +107,23 @@ App = React.createClass({
       selectedGesture: -1
     };
   },
+  flashElement: function(e) {
+    e.className = 'gesture_label Selected';
+    setTimeout((function() {
+      return e.className = 'gesture_label';
+    }), 250);
+    setTimeout((function() {
+      return e.className = 'gesture_label Selected';
+    }), 500);
+    return setTimeout((function() {
+      return e.className = 'gesture_label';
+    }), 750);
+  },
+  componentDidMount: function() {
+    return setTimeout((function() {
+      return this.flashElement(document.getElementsByClassName('gesture_label')[0]);
+    }).bind(this), 300);
+  },
   render: function() {
     var details, startButton;
     startButton = this.state.isEditingGestures ? React.createElement("button", {
