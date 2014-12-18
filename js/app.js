@@ -1,17 +1,38 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var App, GestureList;
+var App, GestureDetails, GestureList;
 
 GestureList = React.createClass({
   render: function() {
-    var listItems;
-    listItems = this.props.labels.map(function(label) {
+    var listItems, selectGesture, selectedGesture;
+    selectedGesture = this.props.selectedGesture;
+    selectGesture = this.props.selectGesture;
+    listItems = this.props.labels.map(function(label, index) {
+      var className;
+      className = 'gesture_label';
+      if (selectedGesture === index) {
+        className += ' Selected';
+      }
       return React.createElement("li", {
-        "className": "gesture_label"
+        "className": className,
+        "onClick": selectGesture,
+        "data-index": index
       }, label);
     });
+    listItems.push(React.createElement("li", {
+      "className": 'gesture_label',
+      "id": 'new_gesture_label',
+      "onClick": this.props.newGesture
+    }, "+ New gesture"));
+    listItems.unshift(React.createElement("h1", null, "Gestures"));
     return React.createElement("ul", {
       "id": "gesture_list"
     }, listItems);
+  }
+});
+
+GestureDetails = React.createClass({
+  render: function() {
+    return React.createElement("main", null, React.createElement("p", null, this.props.name));
   }
 });
 
@@ -25,14 +46,11 @@ App = React.createClass({
       var labelIndex, normalizedFrame;
       normalizedFrame = FingerUtils.toNormalizedFrame(frame);
       console.log("onframe");
-      console.log(normalizedFrame);
-      console.log(JSON.stringify(normalizedFrame));
       if (_this.state.isRecording) {
         return learner.addDatapoint(normalizedFrame, _this.state.currentLabel);
       } else if ((learner.net != null) && learner.train_labels.length > 0) {
         labelIndex = learner.predictLabel(normalizedFrame);
         console.log("predicting");
-        console.log(labelIndex);
         return _this.setState({
           prediction: _this.state.labels[labelIndex]
         });
@@ -66,25 +84,56 @@ App = React.createClass({
       }
     }
   },
+  newGesture: function() {
+    return this.setState({
+      isEditingGestures: true
+    });
+  },
+  selectGesture: function(e) {
+    var newGesture, selectedGesture;
+    newGesture = parseInt(e.target.getAttribute('data-index'), 10);
+    selectedGesture = newGesture === this.state.selectedGesture ? -1 : newGesture;
+    return this.setState({
+      selectedGesture: selectedGesture
+    });
+  },
   getInitialState: function() {
     return {
       isRecording: false,
       currentLabel: 0,
       labels: ["rest", "finger point", "fist"],
-      prediction: "Prediction goes here"
+      prediction: "Prediction goes here",
+      isEditingGestures: false,
+      selectedGesture: -1
     };
   },
   render: function() {
-    return React.createElement("section", null, React.createElement("div", null, "List of gestures:"), GestureList({
-      labels: this.state.labels
+    var details, startButton;
+    startButton = this.state.isEditingGestures ? React.createElement("button", {
+      "id": 'record_button',
+      "onClick": this.startRecording
+    }, (this.state.isRecording ? 'Stop recording' : 'Start recording')) : '';
+    details = this.state.selectedGesture >= 0 ? GestureDetails({
+      name: this.state.labels[this.state.selectedGesture]
+    }) : React.createElement("p", {
+      "id": 'nothingSelected'
+    }, "Nothing selected");
+    return React.createElement("section", null, React.createElement("aside", {
+      "id": 'meta'
+    }, React.createElement("p", null, React.createElement("strong", null, "CS 4701 (Fall 2014)")), React.createElement("p", null, "Feifan Zhou, Teresa Li, Anton Gilgur")), GestureList({
+      labels: this.state.labels,
+      newGesture: this.newGesture,
+      selectedGesture: this.state.selectedGesture,
+      selectGesture: this.selectGesture
     }), React.createElement("article", {
       "id": 'actions'
+    }, startButton, details), React.createElement("aside", {
+      "id": 'action_buttons'
     }, React.createElement("button", {
-      "id": "record_button",
-      "onClick": this.startRecording
-    }, (this.state.isRecording ? "Stop Recording" : "Start Recording")), React.createElement("div", {
-      "id": "predicted_label_div"
-    }, this.state.prediction)));
+      "id": 'import'
+    }, "Import training data"), React.createElement("button", {
+      "id": 'export'
+    }, "Export training data")));
   }
 });
 

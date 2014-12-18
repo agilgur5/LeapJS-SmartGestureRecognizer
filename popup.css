@@ -10,17 +10,4 @@ ul{
   list-style: none;
   list-style-type: none;
 }
-#visualizer{
-  width: 500px;
-  height: 500px;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  margin: 10px;
-}
-#content{
-  position: absolute;
-  top: 0px;
-  left: 520px;
-  margin: 10px;
-}
+

@@ -1,8 +1,25 @@
 GestureList = React.createClass
   render: ->
-    listItems = @props.labels.map (label) ->
-      <li className="gesture_label">{label}</li>
+    selectedGesture = @props.selectedGesture
+    selectGesture = @props.selectGesture
+    listItems = @props.labels.map((label, index) ->
+      className = 'gesture_label'
+      className += ' Selected' if selectedGesture == index
+      <li className={className} onClick={selectGesture} data-index={index}>{label}</li>
+    )
+    listItems.push(
+      <li className='gesture_label' id='new_gesture_label' onClick={@props.newGesture}>+ New gesture</li>
+    )
+    listItems.unshift(
+      <h1>Gestures</h1>
+    )
     return <ul id="gesture_list">{listItems}</ul>
+
+GestureDetails = React.createClass
+  render: ->
+    <main>
+      <p>{@props.name}</p>
+    </main>
 
 App = React.createClass
   bridge: {}
@@ -31,18 +48,31 @@ App = React.createClass
           @setState(isRecording: true, currentLabel: index)
         else
           @setState(isRecording: true, labels: @state.labels.concat(["" + name]), currentLabel: @state.labels.length)
+  newGesture: ->
+    @setState({ isEditingGestures: true })
+  selectGesture: (e) ->
+    newGesture = parseInt(e.target.getAttribute('data-index'), 10)
+    selectedGesture = if newGesture == @state.selectedGesture then -1 else newGesture
+    @setState({ selectedGesture: selectedGesture })
   getInitialState: ->
-    return isRecording: false, currentLabel: 0, labels: ["rest", "finger point", "fist"], prediction: "Prediction goes here"
+    return isRecording: false, currentLabel: 0, labels: ["rest", "finger point", "fist"], prediction: "Prediction goes here", isEditingGestures: false, selectedGesture: -1
   render: ->
+    startButton = if @state.isEditingGestures then <button id='record_button' onClick={@startRecording}>{if @state.isRecording then 'Stop recording' else 'Start recording'}</button> else ''
+    details = if @state.selectedGesture >= 0 then GestureDetails(name: @state.labels[@state.selectedGesture]) else <p id='nothingSelected'>Nothing selected</p>
     <section>
-      <div>List of gestures:</div>
-      {GestureList(labels: @state.labels)}
+      <aside id='meta'>
+        <p><strong>CS 4701 (Fall 2014)</strong></p>
+        <p>Feifan Zhou, Teresa Li, Anton Gilgur</p>
+      </aside>
+      {GestureList(labels: @state.labels, newGesture: @newGesture, selectedGesture: @state.selectedGesture, selectGesture: @selectGesture)}
       <article id='actions'>
-        <button id="record_button" onClick={@startRecording}>
-          {if @state.isRecording then "Stop Recording" else "Start Recording"}
-        </button>
-        <div id="predicted_label_div">{@state.prediction}</div>
+        {startButton}
+        {details}
       </article>
+      <aside id='action_buttons'>
+        <button id='import'>Import training data</button>
+        <button id='export'>Export training data</button>
+      </aside>
     </section>
     
 React.render(App(), document.getElementById('content'))
