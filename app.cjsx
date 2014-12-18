@@ -18,10 +18,10 @@ GestureList = React.createClass
 GestureActions = React.createClass
   render: ->
     <ul className='GestureActions'>
-      <li><button type='button'>Show name</button></li>
-      <li><button type='button'>Prev. tab</button></li>
-      <li><button type='button'>Next tab</button></li>
-      <li><button type='button'>Fistbump</button></li>
+      <li><button type='button' className={if @props.currentAction == 'printName' then 'Selected' else ''} onClick={@props.setAction} data-index={@props.index} data-action='printName'>Show name</button></li>
+      <li><button type='button' className={if @props.currentAction == 'prevTab' then 'Selected' else ''} onClick={@props.setAction} data-index={@props.index} data-action='prevTab'>Prev. tab</button></li>
+      <li><button type='button' className={if @props.currentAction == 'nextTab' then 'Selected' else ''} onClick={@props.setAction} data-index={@props.index} data-action='nextTab'>Next tab</button></li>
+      <li><button type='button' className={if @props.currentAction == 'fistbump' then 'Selected' else ''} onClick={@props.setAction} data-index={@props.index} data-action='fistbump'>Fistbump</button></li>
     </ul>
 
 GestureDetails = React.createClass
@@ -39,7 +39,7 @@ GestureDetails = React.createClass
     <main>
       <input type='text' placeholder='Gesture name' id='gestureNameField' value={@state.name} onChange={@handleChange} data-index={@props.index} ref='gestureNameField' />
       <h3>Gesture action:</h3>
-      {GestureActions()}
+      {GestureActions(setAction: @props.setAction, index: @props.index, currentAction: @props.actions[@props.index])}
     </main>
 
 App = React.createClass
@@ -56,6 +56,9 @@ App = React.createClass
         labelIndex = learner.predictLabel(normalizedFrame)
         console.log("predicting")
         _this.flashElement(document.getElementsByClassName('gesture_label')[labelIndex])
+        action = _this.state.actions[labelIndex]
+        if action
+          this[action]()
         _this.setState(prediction: _this.state.labels[labelIndex])
   startRecording: ->
     if @state.isRecording
@@ -79,8 +82,22 @@ App = React.createClass
     newGesture = parseInt(e.target.getAttribute('data-index'), 10)
     selectedGesture = if newGesture == @state.selectedGesture then -1 else newGesture
     @setState({ selectedGesture: selectedGesture })
+  printName: ->
+    console.log('Print name')
+  prevTab: ->
+    return
+  nextTab: ->
+    return
+  fistbump: ->
+    return
+  setAction: (e) ->
+    action = e.target.getAttribute('data-action')
+    index = parseInt(e.target.getAttribute('data-index'), 10)
+    actions = @state.actions
+    actions[index] = action
+    @setState({ actions: actions })
   getInitialState: ->
-    return isRecording: false, currentLabel: 0, labels: ["rest", "finger point", "fist"], prediction: "Prediction goes here", isEditingGestures: false, selectedGesture: -1
+    return isRecording: false, currentLabel: 0, actions: [null, null, null], labels: ["rest", "finger point", "fist"], prediction: "Prediction goes here", isEditingGestures: false, selectedGesture: -1
   flashElement: (e) ->
     e.className = 'gesture_label Selected'
     setTimeout((-> e.className = 'gesture_label'), 250)
@@ -93,7 +110,7 @@ App = React.createClass
     @setState({ labels: labels })
   render: ->
     startButton = if @state.isEditingGestures then <button id='record_button' onClick={@startRecording}>{if @state.isRecording then 'Stop recording' else 'Start recording'}</button> else ''
-    details = if @state.selectedGesture >= 0 then GestureDetails(name: @state.labels[@state.selectedGesture], index: @state.selectedGesture, setGestureName: @setGestureName) else <p id='nothingSelected'>Nothing selected</p>
+    details = if @state.selectedGesture >= 0 then GestureDetails(name: @state.labels[@state.selectedGesture], index: @state.selectedGesture, setGestureName: @setGestureName, setAction: @setAction, actions: @state.actions) else <p id='nothingSelected'>Nothing selected</p>
     <section>
       <aside id='meta'>
         <p><strong>CS 4701 (Fall 2014)</strong></p>
@@ -106,8 +123,8 @@ App = React.createClass
         {startButton}
       </article>
       <aside id='action_buttons'>
-        <button id='import'>Import training data</button>
-        <button id='export'>Export training data</button>
+        <button id='import'>Import data</button>
+        <button id='export'>Export data</button>
       </aside>
     </section>
     
