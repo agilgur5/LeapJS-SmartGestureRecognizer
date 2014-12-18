@@ -35,10 +35,12 @@ App = React.createClass
   render: ->
     <section>
       {GestureList(labels: @state.labels)}
-      <button id="record_button" onClick={@startRecording}>
-        {if @state.isRecording then "Stop Recording" else "Start Recording"}
-      </button>
-      <div id="predicted_label_div">{@state.prediction}</div>
+      <article id='actions'>
+        <button id="record_button" onClick={@startRecording}>
+          {if @state.isRecording then "Stop Recording" else "Start Recording"}
+        </button>
+        <div id="predicted_label_div">{@state.prediction}</div>
+      </article>
     </section>
     
 React.render(App(), document.getElementById('content'))

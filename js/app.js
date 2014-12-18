@@ -5,9 +5,13 @@ GestureList = React.createClass({
   render: function() {
     var listItems;
     listItems = this.props.labels.map(function(label) {
-      return React.createElement("li", null, label);
+      return React.createElement("li", {
+        "class": "gesture_label"
+      }, label);
     });
-    return React.createElement("ul", null, listItems);
+    return React.createElement("ul", {
+      "id": "gesture_list"
+    }, listItems);
   }
 });
 
@@ -21,7 +25,7 @@ App = React.createClass({
       var labelIndex, normalizedFrame;
       normalizedFrame = FingerUtils.toNormalizedFrame(frame);
       if (_this.state.isRecording) {
-        return learner.addInstanceData(normalizedFrame, _this.state.currentLabel);
+        return learner.addDatapoint(normalizedFrame, _this.state.currentLabel);
       } else if (learner.currentNet != null) {
         labelIndex = learner.predictLabel(normalizedFrame);
         return _this.setState({
@@ -33,7 +37,7 @@ App = React.createClass({
   startRecording: function() {
     var index, name;
     if (this.state.isRecording) {
-      learner.createMagicNet({}, function() {});
+      learner.createNet();
       return this.setState({
         isRecording: false
       });
@@ -62,7 +66,7 @@ App = React.createClass({
     return {
       isRecording: false,
       currentLabel: 0,
-      labels: ["rest", "nothing"],
+      labels: ["nothing", "rest"],
       prediction: "Prediction goes here"
     };
   },
@@ -70,10 +74,10 @@ App = React.createClass({
     return React.createElement("section", null, GestureList({
       labels: this.state.labels
     }), React.createElement("button", {
-      "id": "record",
+      "id": "record_button",
       "onClick": this.startRecording
     }, (this.state.isRecording ? "Stop Recording" : "Start Recording")), React.createElement("div", {
-      "id": "predicted_label"
+      "id": "predicted_label_div"
     }, this.state.prediction));
   }
 });

@@ -1,0 +1,10 @@
+#content section {
+  background: #333344; }
+#content #gesture_list {
+  background: #EEE;
+  display: inline-block;
+  float: left;
+  width: 200px; }
+#content #actions {
+  overflow: hidden;
+  width: auto; }
