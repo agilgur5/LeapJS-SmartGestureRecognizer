@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var App, GestureList;
+var App, GestureDetails, GestureList;
 
 GestureList = React.createClass({
   render: function() {
@@ -27,6 +27,12 @@ GestureList = React.createClass({
     return React.createElement("ul", {
       "id": "gesture_list"
     }, listItems);
+  }
+});
+
+GestureDetails = React.createClass({
+  render: function() {
+    return React.createElement("main", null, React.createElement("p", null, this.props.name));
   }
 });
 
@@ -83,8 +89,11 @@ App = React.createClass({
     });
   },
   selectGesture: function(e) {
+    var newGesture, selectedGesture;
+    newGesture = parseInt(e.target.getAttribute('data-index'), 10);
+    selectedGesture = newGesture === this.state.selectedGesture ? -1 : newGesture;
     return this.setState({
-      selectedGesture: parseInt(e.target.getAttribute('data-index'), 10)
+      selectedGesture: selectedGesture
     });
   },
   getInitialState: function() {
@@ -98,11 +107,16 @@ App = React.createClass({
     };
   },
   render: function() {
-    var startButton;
+    var details, startButton;
     startButton = this.state.isEditingGestures ? React.createElement("button", {
       "id": 'record_button',
       "onClick": this.startRecording
     }, (this.state.isRecording ? 'Stop recording' : 'Start recording')) : '';
+    details = this.state.selectedGesture >= 0 ? GestureDetails({
+      name: this.state.labels[this.state.selectedGesture]
+    }) : React.createElement("p", {
+      "id": 'nothingSelected'
+    }, "Nothing selected");
     return React.createElement("section", null, React.createElement("aside", {
       "id": 'meta'
     }, React.createElement("p", null, React.createElement("strong", null, "CS 4701 (Fall 2014)")), React.createElement("p", null, "Feifan Zhou, Teresa Li, Anton Gilgur")), GestureList({
@@ -112,7 +126,7 @@ App = React.createClass({
       selectGesture: this.selectGesture
     }), React.createElement("article", {
       "id": 'actions'
-    }, startButton), React.createElement("aside", {
+    }, startButton, details), React.createElement("aside", {
       "id": 'action_buttons'
     }, React.createElement("button", {
       "id": 'import'

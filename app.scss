@@ -122,6 +122,14 @@ button {
         padding-left: 1em;
         width: auto;
     }
+    #nothingSelected {
+        color: transparentize(white, 0.5);
+        font-size: 3.5em;
+        font-weight: 700;
+        margin: 1em;
+        text-align: center;
+        text-shadow: 0 1px 1px transparentize(black, 0.4);
+    }
     #action_buttons {
         clear: both;
         margin-left: 10px;

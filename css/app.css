@@ -100,6 +100,13 @@ button {
   overflow: hidden;
   padding-left: 1em;
   width: auto; }
+#content #nothingSelected {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 3.5em;
+  font-weight: 700;
+  margin: 1em;
+  text-align: center;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6); }
 #content #action_buttons {
   clear: both;
   margin-left: 10px;

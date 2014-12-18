@@ -15,6 +15,12 @@ GestureList = React.createClass
     )
     return <ul id="gesture_list">{listItems}</ul>
 
+GestureDetails = React.createClass
+  render: ->
+    <main>
+      <p>{@props.name}</p>
+    </main>
+
 App = React.createClass
   bridge: {}
   componentDidMount: ->
@@ -44,11 +50,14 @@ App = React.createClass
   newGesture: ->
     @setState({ isEditingGestures: true })
   selectGesture: (e) ->
-    @setState({ selectedGesture: parseInt(e.target.getAttribute('data-index'), 10) })
+    newGesture = parseInt(e.target.getAttribute('data-index'), 10)
+    selectedGesture = if newGesture == @state.selectedGesture then -1 else newGesture
+    @setState({ selectedGesture: selectedGesture })
   getInitialState: ->
     return isRecording: false, currentLabel: 0, labels: ["nothing", "rest"], prediction: "Prediction goes here", isEditingGestures: false, selectedGesture: -1
   render: ->
     startButton = if @state.isEditingGestures then <button id='record_button' onClick={@startRecording}>{if @state.isRecording then 'Stop recording' else 'Start recording'}</button> else ''
+    details = if @state.selectedGesture >= 0 then GestureDetails(name: @state.labels[@state.selectedGesture]) else <p id='nothingSelected'>Nothing selected</p>
     <section>
       <aside id='meta'>
         <p><strong>CS 4701 (Fall 2014)</strong></p>
@@ -57,6 +66,7 @@ App = React.createClass
       {GestureList(labels: @state.labels, newGesture: @newGesture, selectedGesture: @state.selectedGesture, selectGesture: @selectGesture)}
       <article id='actions'>
         {startButton}
+        {details}
       </article>
       <aside id='action_buttons'>
         <button id='import'>Import training data</button>
