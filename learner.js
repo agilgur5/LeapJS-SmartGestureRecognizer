@@ -12,7 +12,9 @@ var learner = {};
 learner.train_data = [];
 learner.train_labels = [];
 learner.initial_train_data = [];
-learner.initial_train_labels = [];  
+learner.initial_train_labels = [];
+learner.test_data = [];
+learner.test_labels = [];
 //learner.currentThreadID = -1;
 learner.net = null;
 learner.trainer = null;
@@ -52,9 +54,10 @@ learner.createNet = function() {
   layer_defs.push({type:'input', out_sx:5, out_sy:3, out_depth:1});
   // some fully connected layers
   //layer_defs.push({type:'fc', num_neurons:20, activation:'relu'});
-  //layer_defs.push({type:'fc', num_neurons:20, activation:'relu'});
+  //layer_defs.push({type:'fc', num_neurons:20, activation:'tanh'});
+  //layer_defs.push({type:'fc', num_neurons:20, activation:'sigmoid'});
   layer_defs.push({type:'conv', sx:2, filters:2, activation:'tanh'});
-  //layer_defs.push({type:'conv', sx:2, filters:2, activation:'tanh'});
+  //layer_defs.push({type:'conv', sx:2, filters:4, activation:'sigmoid'});
   //layer_defs.push({type:'conv', sx:4, pad:1, filters:10, stride:1, activation:'relu'});
   // a softmax classifier predicting probabilities for three classes: 0,1,2
   layer_defs.push({type:'softmax', num_classes:3});
@@ -84,8 +87,8 @@ learner.createNet = function() {
 */
 learner.predictLabel = function(datapoint) {
   var vol = this.net.forward(this.createVolume(datapoint));
-  console.log(vol);
-  console.log(vol.w);
+  //console.log(vol);
+  //console.log(vol.w);
   return this.net.getPrediction();
 }
 
@@ -146,8 +149,31 @@ learner.createVolumes = function(train_data) {
   for(var i = 0; i < train_data.length; i++) {
     volArr.push(this.createVolume(train_data[i]));
   }
-  console.log(volArr);
+  //console.log(volArr);
   return volArr;
+}
+
+/*
+  prints out results of learning initial data and testing test data against it
+*/
+learner.test = function() {
+  var predicted = this.predictLabels(this.test_data);
+  var totalCorrect = 0;
+  for(var i = 0; i < predicted.length; i++) {
+    if(predicted[i] == this.test_labels[i]) {
+      totalCorrect++;
+    }
+  }
+  console.log(predicted);
+  console.log(this.test_labels);
+
+  var outputStr = "Train data size: " + learner.train_labels.length + "\n" +
+  "Test data size: " + learner.test_labels.length + "\n" +
+  "Total Correct: " + totalCorrect + "\n" +
+  "Error Rate: " + ((predicted.length - totalCorrect) / predicted.length) + "\n" +
+  "Accuracy: " + (totalCorrect / predicted.length) + "\n";
+
+  console.log(outputStr);
 }
 
 
@@ -160,3 +186,4 @@ learner.test_labels = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1
 
 
 learner.createNet();
+learner.test();
