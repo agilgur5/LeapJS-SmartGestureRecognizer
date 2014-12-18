@@ -1,15 +1,96 @@
+$selected: #8AC7A1;
+
+body {
+    background: #333344;
+    body: 800px;
+    height: 100%;
+}
+
+#visualizer {
+    display: none;
+}
+
+button {
+    background: $selected;
+    border: 1px solid darken($selected, 15%);
+    border-radius: 0.25em;
+    box-shadow: 0 1px 2px 0 transparentize(black, 0.5);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin: 0.5em;
+    outline: none;
+    overflow: hidden;
+    padding: 0.8em;
+    text-shadow: 0 1px 1px transparentize(black, 0.5);
+    transition: color 0.25s;
+    &:hover {
+        background: darken($selected, 10%);
+        cursor: pointer;
+    }
+    &:active, &:selected {
+        background: darken($selected, 15%);
+    }
+}
+
 #content {
+    position: relative;
     section {
         background: #333344;
+        height: 100%;
+        width: 100%;
+    }
+    #meta {
+        color: transparentize(black, 0.4);
+        font-size: 0.7rem;
+        font-weight: 300;
+        left: -140px;
+        position: absolute;
+        text-shadow: 0 1px 0px transparentize(white, 0.8);
+        top: 50px;
+        transform: rotate(-90deg);
+        width: 300px;
+        p {
+            margin-bottom: 0.1em;
+        }
+        strong {
+            font-weight: 700;
+        }
     }
     #gesture_list {
         background: #EEE;
+        border-radius: 0.25em;
+        box-shadow: 0 2px 2px 2px transparentize(black, 0.5);
         display: inline-block;
         float: left;
+        height: 100%;
+        margin-left: 50px;
+        padding-left: 0.2em;
         width: 200px;
     }
+    .gesture_label {
+        border-bottom: 1px solid #DEDEDE;
+        font-size: 1.2em;
+        text-shadow: 0 1px 1px white;
+        padding: 1em;
+        transition: background 0.25s;
+        &:hover {
+            background: #FFFFFFF;
+            cursor: pointer;
+        }
+    }
+    #new_gesture_label {
+        font-weight: 700;
+    }
     #actions {
+        margin-left: 0;
         overflow: hidden;
+        padding-left: 1em;
         width: auto;
+    }
+    #action_buttons {
+        clear: both;
+        margin-left: 50px;
+        margin-top: 1rem;
     }
 }

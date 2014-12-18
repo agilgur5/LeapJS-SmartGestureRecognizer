@@ -2,6 +2,9 @@ GestureList = React.createClass
   render: ->
     listItems = @props.labels.map (label) ->
       <li className="gesture_label">{label}</li>
+    listItems.push(
+      <li className='gesture_label' id='new_gesture_label'>+ New/Edit gesture</li>
+    )
     return <ul id="gesture_list">{listItems}</ul>
 
 App = React.createClass
@@ -34,6 +37,10 @@ App = React.createClass
     return isRecording: false, currentLabel: 0, labels: ["nothing", "rest"], prediction: "Prediction goes here"
   render: ->
     <section>
+      <aside id='meta'>
+        <p><strong>CS 4701 (Fall 2014)</strong></p>
+        <p>Feifan Zhou, Teresa Li, Anton Gilgur</p>
+      </aside>
       <div>List of gestures:</div>
       {GestureList(labels: @state.labels)}
       <article id='actions'>
@@ -42,6 +49,10 @@ App = React.createClass
         </button>
         <div id="predicted_label_div">{@state.prediction}</div>
       </article>
+      <aside id='action_buttons'>
+        <button id='import'>Import training data</button>
+        <button id='export'>Export training data</button>
+      </aside>
     </section>
     
 React.render(App(), document.getElementById('content'))

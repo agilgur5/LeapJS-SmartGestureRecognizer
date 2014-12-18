@@ -9,6 +9,10 @@ GestureList = React.createClass({
         "className": "gesture_label"
       }, label);
     });
+    listItems.push(React.createElement("li", {
+      "className": 'gesture_label',
+      "id": 'new_gesture_label'
+    }, "+ New gesture"));
     return React.createElement("ul", {
       "id": "gesture_list"
     }, listItems);
@@ -71,7 +75,9 @@ App = React.createClass({
     };
   },
   render: function() {
-    return React.createElement("section", null, React.createElement("div", null, "List of gestures:"), GestureList({
+    return React.createElement("section", null, React.createElement("aside", {
+      "id": 'meta'
+    }, React.createElement("p", null, React.createElement("strong", null, "CS 4701 (Fall 2014)")), React.createElement("p", null, "Feifan Zhou, Teresa Li, Anton Gilgur")), React.createElement("div", null, "List of gestures:"), GestureList({
       labels: this.state.labels
     }), React.createElement("article", {
       "id": 'actions'
@@ -80,7 +86,13 @@ App = React.createClass({
       "onClick": this.startRecording
     }, (this.state.isRecording ? "Stop Recording" : "Start Recording")), React.createElement("div", {
       "id": "predicted_label_div"
-    }, this.state.prediction)));
+    }, this.state.prediction)), React.createElement("aside", {
+      "id": 'action_buttons'
+    }, React.createElement("button", {
+      "id": 'import'
+    }, "Import training data"), React.createElement("button", {
+      "id": 'export'
+    }, "Export training data")));
   }
 });
 
