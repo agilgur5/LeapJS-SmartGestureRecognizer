@@ -82,8 +82,10 @@ App = React.createClass
     newGesture = parseInt(e.target.getAttribute('data-index'), 10)
     selectedGesture = if newGesture == @state.selectedGesture then -1 else newGesture
     @setState({ selectedGesture: selectedGesture })
-  printName: ->
-    console.log('Print name')
+  printName: (e) ->
+    index = parseInt(e.target.getAttribute('data-index'), 10)
+    name = @state.labels[index]
+    document.getElementById('log').innerHTML = '<strong>Gesture:</strong> ' + name
   prevTab: ->
     return
   nextTab: ->

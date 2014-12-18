@@ -17,6 +17,17 @@ body {
     height: 100% !important;
     width: 100% !important; }
 
+#log {
+  bottom: 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 300;
+  margin: 0;
+  right: 10px;
+  position: absolute;
+  text-shadow: 0 1px 0px rgba(255, 255, 255, 0.2); }
+  #log strong {
+    font-weight: 700; }
+
 button {
   background: #8AC7A1;
   border: 1px solid #56ae77;

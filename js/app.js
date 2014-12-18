@@ -172,8 +172,11 @@ App = React.createClass({
       selectedGesture: selectedGesture
     });
   },
-  printName: function() {
-    return console.log('Print name');
+  printName: function(e) {
+    var index, name;
+    index = parseInt(e.target.getAttribute('data-index'), 10);
+    name = this.state.labels[index];
+    return document.getElementById('log').innerHTML = '<strong>Gesture:</strong> ' + name;
   },
   prevTab: function() {},
   nextTab: function() {},
