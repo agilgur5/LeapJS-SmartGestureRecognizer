@@ -11,17 +11,18 @@ App = React.createClass
     _this = @
     @bridge.onFrame = (frame) ->
       normalizedFrame = FingerUtils.toNormalizedFrame(frame)
+      console.log("onframe")
       if _this.state.isRecording
         learner.addDatapoint(normalizedFrame, _this.state.currentLabel)
-      else if learner.currentNet?
+      else if learner.net? and learner.train_labels.length > 0
         labelIndex = learner.predictLabel(normalizedFrame)
+        console.log("predicting")
         _this.setState(prediction: _this.state.labels[labelIndex])
   startRecording: ->
     if @state.isRecording
-      learner.createNet()
       @setState(isRecording: false)
     else
-      name = prompt("What gesture is this?", "Finger Tap")
+      name = prompt("What gesture is this?", "finger point")
       if !name?
         alert("Incorrect input")
       else 
@@ -31,7 +32,7 @@ App = React.createClass
         else
           @setState(isRecording: true, labels: @state.labels.concat(["" + name]), currentLabel: @state.labels.length)
   getInitialState: ->
-    return isRecording: false, currentLabel: 0, labels: ["nothing", "rest"], prediction: "Prediction goes here"
+    return isRecording: false, currentLabel: 0, labels: ["rest", "finger point", "fist"], prediction: "Prediction goes here"
   render: ->
     <section>
       <div>List of gestures:</div>

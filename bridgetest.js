@@ -1,1 +1,0 @@
-(function(){var n,e,r;r=window.Bridge.build(),n=0,e=new cnnvis.Graph,r.onFrame=function(r){var i;return i=FingerUtils.toNormalizedFrame(r),console.log("Frame: "+JSON.stringify(i)),e.add(n,finger[0]),e.drawSelf(document.getElementById("graph")),n++}}).call(this);

@@ -24,10 +24,12 @@ App = React.createClass({
     return this.bridge.onFrame = function(frame) {
       var labelIndex, normalizedFrame;
       normalizedFrame = FingerUtils.toNormalizedFrame(frame);
+      console.log("onframe");
       if (_this.state.isRecording) {
         return learner.addDatapoint(normalizedFrame, _this.state.currentLabel);
-      } else if (learner.currentNet != null) {
+      } else if ((learner.net != null) && learner.train_labels.length > 0) {
         labelIndex = learner.predictLabel(normalizedFrame);
+        console.log("predicting");
         return _this.setState({
           prediction: _this.state.labels[labelIndex]
         });
@@ -37,12 +39,11 @@ App = React.createClass({
   startRecording: function() {
     var index, name;
     if (this.state.isRecording) {
-      learner.createNet();
       return this.setState({
         isRecording: false
       });
     } else {
-      name = prompt("What gesture is this?", "Finger Tap");
+      name = prompt("What gesture is this?", "finger point");
       if (name == null) {
         return alert("Incorrect input");
       } else {
@@ -66,7 +67,7 @@ App = React.createClass({
     return {
       isRecording: false,
       currentLabel: 0,
-      labels: ["nothing", "rest"],
+      labels: ["rest", "finger point", "fist"],
       prediction: "Prediction goes here"
     };
   },

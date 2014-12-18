@@ -11,8 +11,9 @@ var learner = {};
 */
 learner.train_data = [];
 learner.train_labels = [];  
-learner.currentThreadID = -1;
-learner.currentNet = null;
+//learner.currentThreadID = -1;
+learner.net = null;
+learner.trainer = null;
 
 /*
   @param datapoint a 1D to 3D array of data
@@ -21,6 +22,8 @@ learner.currentNet = null;
 learner.addDatapoint = function(datapoint, train_label) {
   this.train_data.push(datapoint);  
   this.train_labels.push(train_label);
+  this.trainer.train(this.createVolume(datapoint), train_label);
+  console.log(this.train_data);
 }
 
 /*
@@ -42,18 +45,36 @@ learner.addData = function(train_data, train_labels) {
   @param callback function to be called back at end of learning a single batch
   @return the MagicNet
 */
-learner.createNet = function(opts) {
+learner.createNet = function() {
+  
+  /* old magicnet code
   clearInterval(this.currentThreadID); // stop previous net's learning
 
   var opts = opts || {};
   var magicNet = new convnetjs.MagicNet(this.createVolumes(this.train_data), this.train_labels, opts);
   
-  // start training MagicNet. Every call trains all candidates in current batch
-  console.log(magicNet);
+  start training MagicNet. Every call trains all candidates in current batch
   this.currentThreadID = setInterval(function() {
-    magicNet.step()
-  }, 0);
-  return this.currentNet = magicNet;
+    magicNet.step();
+  }, 0); */
+
+  var layer_defs = [];
+  // input layer of size 5x48x1 (all volumes are 3D)
+  layer_defs.push({type:'input', out_sx:5, out_sy:48, out_depth:1});
+  // some fully connected layers
+  layer_defs.push({type:'fc', num_neurons:20, activation:'relu'});
+  layer_defs.push({type:'fc', num_neurons:20, activation:'relu'});
+  // a softmax classifier predicting probabilities for three classes: 0,1,2
+  layer_defs.push({type:'softmax', num_classes:3});
+   
+  // create a net out of it
+  var net = new convnetjs.Net();
+  net.makeLayers(layer_defs);
+
+  var trainer = new convnetjs.Trainer(net, {learning_rate:0.01, l2_decay:0.001});
+  
+  this.trainer = trainer;
+  return this.net = net;
 }
 
 /* 
@@ -63,7 +84,12 @@ learner.createNet = function(opts) {
   @return the predicted label, a number corresponding to one from train_labels
 */
 learner.predictLabel = function(datapoint) {
-  return this.currentNet.predict(this.createVolume(datapoint));
+  // old magicnet version
+  //return this.net.predict(this.createVolume(datapoint));
+  var vol = this.net.forward(this.createVolume(datapoint));
+  console.log(vol);
+  console.log(vol.w);
+  return this.net.getPrediction();
 }
 
 
@@ -96,7 +122,7 @@ learner.createVolume = function(datapoint) {
     vol = new convnetjs.Vol(datapoint.length, datapoint[0].length, 1);
     for(var j = 0; j < datapoint.length; j++) {
       for(var k = 0; k < datapoint[j].length; k++) {
-        vol.set(j, k, 0, datapoint[j][k]);
+        vol.set(j, k, 1, datapoint[j][k]);
       }
     }
   } else {
@@ -126,3 +152,5 @@ learner.createVolumes = function(train_data) {
   console.log(volArr);
   return volArr;
 }
+
+learner.createNet();
