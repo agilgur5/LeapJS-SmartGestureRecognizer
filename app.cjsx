@@ -63,7 +63,7 @@ App = React.createClass
     labels = @state.labels
     labels.push('Unnamed gesture')
     gestureIndex = labels.length - 1
-    @setState({ labels: labels, selectedGesture: gestureIndex })
+    @setState({ labels: labels, selectedGesture: gestureIndex, isEditingGestures: true })
   selectGesture: (e) ->
     newGesture = parseInt(e.target.getAttribute('data-index'), 10)
     selectedGesture = if newGesture == @state.selectedGesture then -1 else newGesture
@@ -91,8 +91,8 @@ App = React.createClass
       <div>{@state.prediction}</div>
       {GestureList(labels: @state.labels, newGesture: @newGesture, selectedGesture: @state.selectedGesture, selectGesture: @selectGesture)}
       <article id='actions'>
-        {startButton}
         {details}
+        {startButton}
       </article>
       <aside id='action_buttons'>
         <button id='import'>Import training data</button>

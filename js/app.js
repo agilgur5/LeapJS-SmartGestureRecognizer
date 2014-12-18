@@ -120,7 +120,8 @@ App = React.createClass({
     gestureIndex = labels.length - 1;
     return this.setState({
       labels: labels,
-      selectedGesture: gestureIndex
+      selectedGesture: gestureIndex,
+      isEditingGestures: true
     });
   },
   selectGesture: function(e) {
@@ -184,7 +185,7 @@ App = React.createClass({
       selectGesture: this.selectGesture
     }), React.createElement("article", {
       "id": 'actions'
-    }, startButton, details), React.createElement("aside", {
+    }, details, startButton), React.createElement("aside", {
       "id": 'action_buttons'
     }, React.createElement("button", {
       "id": 'import'
