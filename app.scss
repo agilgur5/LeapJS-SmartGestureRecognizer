@@ -54,9 +54,17 @@ button {
 
 #content {
     section {
-        background: #333344;
+        //background: #333344;
         height: 100%;
         width: 100%;
+    }
+    input {
+        background: none;
+        border: none;
+        border-bottom: 1px solid transparentize(white, 0.5);
+        color: white;
+        outline: none;
+        padding: 0.5em;
     }
     #meta {
         bottom: 0;
@@ -117,10 +125,14 @@ button {
         font-weight: 700;
     }
     #actions {
-        margin-left: 0;
+        margin: 10px;
         overflow: hidden;
         padding-left: 1em;
         width: auto;
+    }
+    #gestureNameField {
+        font-size: 2em;
+        font-weight: 300;
     }
     #nothingSelected {
         color: transparentize(white, 0.5);

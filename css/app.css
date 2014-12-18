@@ -43,9 +43,15 @@ button {
   display: none; }
 
 #content section {
-  background: #333344;
   height: 100%;
   width: 100%; }
+#content input {
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  outline: none;
+  padding: 0.5em; }
 #content #meta {
   bottom: 0;
   color: rgba(255, 255, 255, 0.6);
@@ -96,10 +102,13 @@ button {
 #content #new_gesture_label {
   font-weight: 700; }
 #content #actions {
-  margin-left: 0;
+  margin: 10px;
   overflow: hidden;
   padding-left: 1em;
   width: auto; }
+#content #gestureNameField {
+  font-size: 2em;
+  font-weight: 300; }
 #content #nothingSelected {
   color: rgba(255, 255, 255, 0.5);
   font-size: 3.5em;

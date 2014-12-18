@@ -31,8 +31,36 @@ GestureList = React.createClass({
 });
 
 GestureDetails = React.createClass({
+  getInitialState: function() {
+    return {
+      name: this.props.name
+    };
+  },
+  componentDidMount: function() {
+    return this.refs.gestureNameField.getDOMNode().focus();
+  },
+  componentWillReceiveProps: function(newProps) {
+    return this.setState({
+      name: newProps.name
+    });
+  },
+  handleChange: function(e) {
+    this.props.setGestureName(e);
+    return this.setState({
+      name: e.target.value
+    });
+  },
   render: function() {
-    return React.createElement("main", null, React.createElement("p", null, this.props.name));
+    console.log('Name: ' + this.props.name);
+    return React.createElement("main", null, React.createElement("input", {
+      "type": 'text',
+      "placeholder": 'Gesture name',
+      "id": 'gestureNameField',
+      "value": this.state.name,
+      "onChange": this.handleChange,
+      "data-index": this.props.index,
+      "ref": 'gestureNameField'
+    }));
   }
 });
 
@@ -85,8 +113,13 @@ App = React.createClass({
     }
   },
   newGesture: function() {
+    var gestureIndex, labels;
+    labels = this.state.labels;
+    labels.push('Unnamed gesture');
+    gestureIndex = labels.length - 1;
     return this.setState({
-      isEditingGestures: true
+      labels: labels,
+      selectedGesture: gestureIndex
     });
   },
   selectGesture: function(e) {
@@ -107,6 +140,32 @@ App = React.createClass({
       selectedGesture: -1
     };
   },
+  flashElement: function(e) {
+    e.className = 'gesture_label Selected';
+    setTimeout((function() {
+      return e.className = 'gesture_label';
+    }), 250);
+    setTimeout((function() {
+      return e.className = 'gesture_label Selected';
+    }), 500);
+    return setTimeout((function() {
+      return e.className = 'gesture_label';
+    }), 750);
+  },
+  componentDidMount: function() {
+    return setTimeout((function() {
+      return this.flashElement(document.getElementsByClassName('gesture_label')[0]);
+    }).bind(this), 300);
+  },
+  setGestureName: function(e) {
+    var index, labels;
+    index = parseInt(e.target.getAttribute('data-index'), 10);
+    labels = this.state.labels;
+    labels[index] = e.target.value;
+    return this.setState({
+      labels: labels
+    });
+  },
   render: function() {
     var details, startButton;
     startButton = this.state.isEditingGestures ? React.createElement("button", {
@@ -114,7 +173,9 @@ App = React.createClass({
       "onClick": this.startRecording
     }, (this.state.isRecording ? 'Stop recording' : 'Start recording')) : '';
     details = this.state.selectedGesture >= 0 ? GestureDetails({
-      name: this.state.labels[this.state.selectedGesture]
+      name: this.state.labels[this.state.selectedGesture],
+      index: this.state.selectedGesture,
+      setGestureName: this.setGestureName
     }) : React.createElement("p", {
       "id": 'nothingSelected'
     }, "Nothing selected");
