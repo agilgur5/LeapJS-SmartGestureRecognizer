@@ -1,7 +1,7 @@
 GestureList = React.createClass
   render: ->
     listItems = @props.labels.map (label) ->
-      <li class="gesture_label">{label}</li>
+      <li className="gesture_label">{label}</li>
     return <ul id="gesture_list">{listItems}</ul>
 
 App = React.createClass
@@ -29,11 +29,12 @@ App = React.createClass
         if index != -1
           @setState(isRecording: true, currentLabel: index)
         else
-          @setState(isRecording: true, @state.labels.concat(["" + name]), currentLabel: @state.labels.length)
+          @setState(isRecording: true, labels: @state.labels.concat(["" + name]), currentLabel: @state.labels.length)
   getInitialState: ->
     return isRecording: false, currentLabel: 0, labels: ["nothing", "rest"], prediction: "Prediction goes here"
   render: ->
     <section>
+      <div>List of gestures:</div>
       {GestureList(labels: @state.labels)}
       <article id='actions'>
         <button id="record_button" onClick={@startRecording}>

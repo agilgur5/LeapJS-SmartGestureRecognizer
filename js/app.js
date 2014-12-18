@@ -6,7 +6,7 @@ GestureList = React.createClass({
     var listItems;
     listItems = this.props.labels.map(function(label) {
       return React.createElement("li", {
-        "class": "gesture_label"
+        "className": "gesture_label"
       }, label);
     });
     return React.createElement("ul", {
@@ -54,8 +54,8 @@ App = React.createClass({
           });
         } else {
           return this.setState({
-            isRecording: true
-          }, this.state.labels.concat(["" + name]), {
+            isRecording: true,
+            labels: this.state.labels.concat(["" + name]),
             currentLabel: this.state.labels.length
           });
         }
@@ -71,14 +71,16 @@ App = React.createClass({
     };
   },
   render: function() {
-    return React.createElement("section", null, GestureList({
+    return React.createElement("section", null, React.createElement("div", null, "List of gestures:"), GestureList({
       labels: this.state.labels
-    }), React.createElement("button", {
+    }), React.createElement("article", {
+      "id": 'actions'
+    }, React.createElement("button", {
       "id": "record_button",
       "onClick": this.startRecording
     }, (this.state.isRecording ? "Stop Recording" : "Start Recording")), React.createElement("div", {
       "id": "predicted_label_div"
-    }, this.state.prediction));
+    }, this.state.prediction)));
   }
 });
 
