@@ -16,9 +16,11 @@ GestureList = React.createClass
     return <ul id="gesture_list">{listItems}</ul>
 
 GestureDetails = React.createClass
+  componentDidMount: ->
+    @refs.gestureNameField.getDOMNode().focus()
   render: ->
     <main>
-      <p>{@props.name}</p>
+      <input type='text' placeholder='Gesture name' id='gestureNameField' defaultValue={@props.name} onKeyUp={@props.setGestureName} data-index={@props.index} ref='gestureNameField' />
     </main>
 
 App = React.createClass
@@ -49,7 +51,10 @@ App = React.createClass
         else
           @setState(isRecording: true, labels: @state.labels.concat(["" + name]), currentLabel: @state.labels.length)
   newGesture: ->
-    @setState({ isEditingGestures: true })
+    labels = @state.labels
+    labels.push('Unnamed gesture')
+    gestureIndex = labels.length - 1
+    @setState({ labels: labels, selectedGesture: gestureIndex })
   selectGesture: (e) ->
     newGesture = parseInt(e.target.getAttribute('data-index'), 10)
     selectedGesture = if newGesture == @state.selectedGesture then -1 else newGesture
@@ -63,9 +68,14 @@ App = React.createClass
     setTimeout((-> e.className = 'gesture_label'), 750)
   componentDidMount: ->
     setTimeout((-> @flashElement(document.getElementsByClassName('gesture_label')[0])).bind(this), 300)
+  setGestureName: (e) ->
+    index = parseInt(e.target.getAttribute('data-index'), 10)
+    labels = @state.labels
+    labels[index] = e.target.value
+    @setState({ labels: labels })
   render: ->
     startButton = if @state.isEditingGestures then <button id='record_button' onClick={@startRecording}>{if @state.isRecording then 'Stop recording' else 'Start recording'}</button> else ''
-    details = if @state.selectedGesture >= 0 then GestureDetails(name: @state.labels[@state.selectedGesture]) else <p id='nothingSelected'>Nothing selected</p>
+    details = if @state.selectedGesture >= 0 then GestureDetails(name: @state.labels[@state.selectedGesture], index: @state.selectedGesture, setGestureName: @setGestureName) else <p id='nothingSelected'>Nothing selected</p>
     <section>
       <aside id='meta'>
         <p><strong>CS 4701 (Fall 2014)</strong></p>

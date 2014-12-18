@@ -31,8 +31,19 @@ GestureList = React.createClass({
 });
 
 GestureDetails = React.createClass({
+  componentDidMount: function() {
+    return this.refs.gestureNameField.getDOMNode().focus();
+  },
   render: function() {
-    return React.createElement("main", null, React.createElement("p", null, this.props.name));
+    return React.createElement("main", null, React.createElement("input", {
+      "type": 'text',
+      "placeholder": 'Gesture name',
+      "id": 'gestureNameField',
+      "defaultValue": this.props.name,
+      "onKeyUp": this.props.setGestureName,
+      "data-index": this.props.index,
+      "ref": 'gestureNameField'
+    }));
   }
 });
 
@@ -85,8 +96,13 @@ App = React.createClass({
     }
   },
   newGesture: function() {
+    var gestureIndex, labels;
+    labels = this.state.labels;
+    labels.push('Unnamed gesture');
+    gestureIndex = labels.length - 1;
     return this.setState({
-      isEditingGestures: true
+      labels: labels,
+      selectedGesture: gestureIndex
     });
   },
   selectGesture: function(e) {
@@ -124,6 +140,15 @@ App = React.createClass({
       return this.flashElement(document.getElementsByClassName('gesture_label')[0]);
     }).bind(this), 300);
   },
+  setGestureName: function(e) {
+    var index, labels;
+    index = parseInt(e.target.getAttribute('data-index'), 10);
+    labels = this.state.labels;
+    labels[index] = e.target.value;
+    return this.setState({
+      labels: labels
+    });
+  },
   render: function() {
     var details, startButton;
     startButton = this.state.isEditingGestures ? React.createElement("button", {
@@ -131,7 +156,9 @@ App = React.createClass({
       "onClick": this.startRecording
     }, (this.state.isRecording ? 'Stop recording' : 'Start recording')) : '';
     details = this.state.selectedGesture >= 0 ? GestureDetails({
-      name: this.state.labels[this.state.selectedGesture]
+      name: this.state.labels[this.state.selectedGesture],
+      index: this.state.selectedGesture,
+      setGestureName: this.setGestureName
     }) : React.createElement("p", {
       "id": 'nothingSelected'
     }, "Nothing selected");
