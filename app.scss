@@ -130,9 +130,44 @@ button {
         padding-left: 1em;
         width: auto;
     }
+    main {
+        color: white;
+        > h3 {
+            font-size: 1.2rem;
+            margin: 1.5em auto 0em auto;
+        }
+    }
     #gestureNameField {
         font-size: 2em;
         font-weight: 300;
+    }
+    .GestureActions {
+        list-style: none;
+        padding-left: 0;
+        li {
+            display: inline-block;
+            width: 100px;
+            > button {
+                border-left: none;
+                border-right: none;
+                border-radius: 0;
+                width: 100%;
+            }
+            &:first-child {
+                > button {
+                    border-left: inherit;
+                    border-top-left-radius: 0.25em;
+                    border-bottom-left-radius: 0.25em;
+                }
+            }
+            &:last-child {
+                > button {
+                    border-right: inherit;
+                    border-top-right-radius: 0.25em;
+                    border-bottom-right-radius: 0.25em;
+                }
+            }
+        }
     }
     #nothingSelected {
         color: transparentize(white, 0.5);

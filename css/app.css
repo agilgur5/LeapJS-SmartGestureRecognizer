@@ -106,9 +106,33 @@ button {
   overflow: hidden;
   padding-left: 1em;
   width: auto; }
+#content main {
+  color: white; }
+  #content main > h3 {
+    font-size: 1.2rem;
+    margin: 1.5em auto 0em auto; }
 #content #gestureNameField {
   font-size: 2em;
   font-weight: 300; }
+#content .GestureActions {
+  list-style: none;
+  padding-left: 0; }
+  #content .GestureActions li {
+    display: inline-block;
+    width: 100px; }
+    #content .GestureActions li > button {
+      border-left: none;
+      border-right: none;
+      border-radius: 0;
+      width: 100%; }
+    #content .GestureActions li:first-child > button {
+      border-left: inherit;
+      border-top-left-radius: 0.25em;
+      border-bottom-left-radius: 0.25em; }
+    #content .GestureActions li:last-child > button {
+      border-right: inherit;
+      border-top-right-radius: 0.25em;
+      border-bottom-right-radius: 0.25em; }
 #content #nothingSelected {
   color: rgba(255, 255, 255, 0.5);
   font-size: 3.5em;

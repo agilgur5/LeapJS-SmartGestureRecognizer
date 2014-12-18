@@ -15,6 +15,15 @@ GestureList = React.createClass
     )
     return <ul id="gesture_list">{listItems}</ul>
 
+GestureActions = React.createClass
+  render: ->
+    <ul className='GestureActions'>
+      <li><button type='button'>Show name</button></li>
+      <li><button type='button'>Prev. tab</button></li>
+      <li><button type='button'>Next tab</button></li>
+      <li><button type='button'>Fistbump</button></li>
+    </ul>
+
 GestureDetails = React.createClass
   getInitialState: ->
     { name: @props.name }
@@ -29,6 +38,8 @@ GestureDetails = React.createClass
     console.log('Name: ' + @props.name)
     <main>
       <input type='text' placeholder='Gesture name' id='gestureNameField' value={@state.name} onChange={@handleChange} data-index={@props.index} ref='gestureNameField' />
+      <h3>Gesture action:</h3>
+      {GestureActions()}
     </main>
 
 App = React.createClass

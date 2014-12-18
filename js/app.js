@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var App, GestureDetails, GestureList;
+var App, GestureActions, GestureDetails, GestureList;
 
 GestureList = React.createClass({
   render: function() {
@@ -27,6 +27,22 @@ GestureList = React.createClass({
     return React.createElement("ul", {
       "id": "gesture_list"
     }, listItems);
+  }
+});
+
+GestureActions = React.createClass({
+  render: function() {
+    return React.createElement("ul", {
+      "className": 'GestureActions'
+    }, React.createElement("li", null, React.createElement("button", {
+      "type": 'button'
+    }, "Show name")), React.createElement("li", null, React.createElement("button", {
+      "type": 'button'
+    }, "Prev. tab")), React.createElement("li", null, React.createElement("button", {
+      "type": 'button'
+    }, "Next tab")), React.createElement("li", null, React.createElement("button", {
+      "type": 'button'
+    }, "Fistbump")));
   }
 });
 
@@ -60,7 +76,7 @@ GestureDetails = React.createClass({
       "onChange": this.handleChange,
       "data-index": this.props.index,
       "ref": 'gestureNameField'
-    }));
+    }), React.createElement("h3", null, "Gesture action:"), GestureActions());
   }
 });
 
