@@ -3,16 +3,27 @@ var App, GestureList;
 
 GestureList = React.createClass({
   render: function() {
-    var listItems;
-    listItems = this.props.labels.map(function(label) {
+    var listItems, selectGesture, selectedGesture;
+    selectedGesture = this.props.selectedGesture;
+    selectGesture = this.props.selectGesture;
+    listItems = this.props.labels.map(function(label, index) {
+      var className;
+      className = 'gesture_label';
+      if (selectedGesture === index) {
+        className += ' Selected';
+      }
       return React.createElement("li", {
-        "className": "gesture_label"
+        "className": className,
+        "onClick": selectGesture,
+        "data-index": index
       }, label);
     });
     listItems.push(React.createElement("li", {
       "className": 'gesture_label',
-      "id": 'new_gesture_label'
+      "id": 'new_gesture_label',
+      "onClick": this.props.newGesture
     }, "+ New gesture"));
+    listItems.unshift(React.createElement("h1", null, "Gestures"));
     return React.createElement("ul", {
       "id": "gesture_list"
     }, listItems);
@@ -66,27 +77,42 @@ App = React.createClass({
       }
     }
   },
+  newGesture: function() {
+    return this.setState({
+      isEditingGestures: true
+    });
+  },
+  selectGesture: function(e) {
+    return this.setState({
+      selectedGesture: parseInt(e.target.getAttribute('data-index'), 10)
+    });
+  },
   getInitialState: function() {
     return {
       isRecording: false,
       currentLabel: 0,
       labels: ["nothing", "rest"],
-      prediction: "Prediction goes here"
+      prediction: "Prediction goes here",
+      isEditingGestures: false,
+      selectedGesture: -1
     };
   },
   render: function() {
+    var startButton;
+    startButton = this.state.isEditingGestures ? React.createElement("button", {
+      "id": 'record_button',
+      "onClick": this.startRecording
+    }, (this.state.isRecording ? 'Stop recording' : 'Start recording')) : '';
     return React.createElement("section", null, React.createElement("aside", {
       "id": 'meta'
-    }, React.createElement("p", null, React.createElement("strong", null, "CS 4701 (Fall 2014)")), React.createElement("p", null, "Feifan Zhou, Teresa Li, Anton Gilgur")), React.createElement("div", null, "List of gestures:"), GestureList({
-      labels: this.state.labels
+    }, React.createElement("p", null, React.createElement("strong", null, "CS 4701 (Fall 2014)")), React.createElement("p", null, "Feifan Zhou, Teresa Li, Anton Gilgur")), GestureList({
+      labels: this.state.labels,
+      newGesture: this.newGesture,
+      selectedGesture: this.state.selectedGesture,
+      selectGesture: this.selectGesture
     }), React.createElement("article", {
       "id": 'actions'
-    }, React.createElement("button", {
-      "id": "record_button",
-      "onClick": this.startRecording
-    }, (this.state.isRecording ? "Stop Recording" : "Start Recording")), React.createElement("div", {
-      "id": "predicted_label_div"
-    }, this.state.prediction)), React.createElement("aside", {
+    }, startButton), React.createElement("aside", {
       "id": 'action_buttons'
     }, React.createElement("button", {
       "id": 'import'

@@ -3,7 +3,9 @@ $selected: #8AC7A1;
 body {
     background: #333344;
     body: 800px;
+    font-family: 'Proxima Nova', 'Lato', sans-serif;
     height: 100%;
+    position: relative;
 }
 
 #visualizer {
@@ -24,6 +26,9 @@ button {
     padding: 0.8em;
     text-shadow: 0 1px 1px transparentize(black, 0.5);
     transition: color 0.25s;
+    &:first-child {
+        margin-left: 0;
+    }
     &:hover {
         background: darken($selected, 10%);
         cursor: pointer;
@@ -33,25 +38,28 @@ button {
     }
 }
 
+.Hidden {
+    display: none;
+}
+
 #content {
-    position: relative;
     section {
         background: #333344;
         height: 100%;
         width: 100%;
     }
     #meta {
-        color: transparentize(black, 0.4);
+        bottom: 0;
+        color: transparentize(white, 0.4);
         font-size: 0.7rem;
         font-weight: 300;
-        left: -140px;
+        left: 0px;
         position: absolute;
         text-shadow: 0 1px 0px transparentize(white, 0.8);
-        top: 50px;
-        transform: rotate(-90deg);
         width: 300px;
         p {
-            margin-bottom: 0.1em;
+            display: inline-block;
+            margin: 0.25em;
         }
         strong {
             font-weight: 700;
@@ -64,9 +72,19 @@ button {
         display: inline-block;
         float: left;
         height: 100%;
-        margin-left: 50px;
+        margin-left: 10px;
+        overflow: hidden;
         padding-left: 0.2em;
         width: 200px;
+        h1 {
+            background: #E6E6E6;
+            border-bottom: 1px solid #DDD;
+            font-size: 2em;
+            font-weight: 300;
+            margin: 0;
+            padding: 0.7em 1.5em;
+            text-align: center;
+       }
     }
     .gesture_label {
         border-bottom: 1px solid #DEDEDE;
@@ -77,6 +95,12 @@ button {
         &:hover {
             background: #FFFFFFF;
             cursor: pointer;
+        }
+        &.Selected {
+            background: $selected;
+            color: transparentize(white, 0.2);
+            font-weight: 700;
+            text-shadow: 0 -1px 1px transparentize(black, 0.8);
         }
     }
     #new_gesture_label {
@@ -90,7 +114,7 @@ button {
     }
     #action_buttons {
         clear: both;
-        margin-left: 50px;
+        margin-left: 10px;
         margin-top: 1rem;
     }
 }
