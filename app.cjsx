@@ -16,11 +16,19 @@ GestureList = React.createClass
     return <ul id="gesture_list">{listItems}</ul>
 
 GestureDetails = React.createClass
+  getInitialState: ->
+    { name: @props.name }
   componentDidMount: ->
     @refs.gestureNameField.getDOMNode().focus()
+  componentWillReceiveProps: (newProps) ->
+    @setState({ name: newProps.name })
+  handleChange: (e) ->
+    @props.setGestureName(e)
+    @setState({ name: e.target.value })
   render: ->
+    console.log('Name: ' + @props.name)
     <main>
-      <input type='text' placeholder='Gesture name' id='gestureNameField' defaultValue={@props.name} onKeyUp={@props.setGestureName} data-index={@props.index} ref='gestureNameField' />
+      <input type='text' placeholder='Gesture name' id='gestureNameField' value={@state.name} onChange={@handleChange} data-index={@props.index} ref='gestureNameField' />
     </main>
 
 App = React.createClass

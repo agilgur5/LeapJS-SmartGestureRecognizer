@@ -31,16 +31,33 @@ GestureList = React.createClass({
 });
 
 GestureDetails = React.createClass({
+  getInitialState: function() {
+    return {
+      name: this.props.name
+    };
+  },
   componentDidMount: function() {
     return this.refs.gestureNameField.getDOMNode().focus();
   },
+  componentWillReceiveProps: function(newProps) {
+    return this.setState({
+      name: newProps.name
+    });
+  },
+  handleChange: function(e) {
+    this.props.setGestureName(e);
+    return this.setState({
+      name: e.target.value
+    });
+  },
   render: function() {
+    console.log('Name: ' + this.props.name);
     return React.createElement("main", null, React.createElement("input", {
       "type": 'text',
       "placeholder": 'Gesture name',
       "id": 'gestureNameField',
-      "defaultValue": this.props.name,
-      "onKeyUp": this.props.setGestureName,
+      "value": this.state.name,
+      "onChange": this.handleChange,
       "data-index": this.props.index,
       "ref": 'gestureNameField'
     }));
