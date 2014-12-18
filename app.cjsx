@@ -64,6 +64,7 @@ App = React.createClass
         <p><strong>CS 4701 (Fall 2014)</strong></p>
         <p>Feifan Zhou, Teresa Li, Anton Gilgur</p>
       </aside>
+      <div>{@state.prediction}</div>
       {GestureList(labels: @state.labels, newGesture: @newGesture, selectedGesture: @state.selectedGesture, selectGesture: @selectGesture)}
       <article id='actions'>
         {startButton}

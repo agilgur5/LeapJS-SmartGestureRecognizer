@@ -120,7 +120,7 @@ App = React.createClass({
     }, "Nothing selected");
     return React.createElement("section", null, React.createElement("aside", {
       "id": 'meta'
-    }, React.createElement("p", null, React.createElement("strong", null, "CS 4701 (Fall 2014)")), React.createElement("p", null, "Feifan Zhou, Teresa Li, Anton Gilgur")), GestureList({
+    }, React.createElement("p", null, React.createElement("strong", null, "CS 4701 (Fall 2014)")), React.createElement("p", null, "Feifan Zhou, Teresa Li, Anton Gilgur")), React.createElement("div", null, this.state.prediction), GestureList({
       labels: this.state.labels,
       newGesture: this.newGesture,
       selectedGesture: this.state.selectedGesture,
