@@ -46,12 +46,14 @@ learner.createNet = function(opts) {
   clearInterval(this.currentThreadID); // stop previous net's learning
 
   var opts = opts || {};
-  this.currentNet = new convnetjs.MagicNet(this.createVolumes(this.train_data), this.train_labels, opts);
+  var magicNet = new convnetjs.MagicNet(this.createVolumes(this.train_data), this.train_labels, opts);
   
   // start training MagicNet. Every call trains all candidates in current batch
-  console.log(this.currentNet);
-  this.currentThreadID = setInterval(this.currentNet.step, 0);
-  return this.currentNet;
+  console.log(magicNet);
+  this.currentThreadID = setInterval(function() {
+    magicNet.step()
+  }, 0);
+  return this.currentNet = magicNet;
 }
 
 /* 
@@ -91,7 +93,7 @@ learner.createVolume = function(datapoint) {
   if(typeof datapoint[0] == "number") {
     vol = new convnetjs.Vol(datapoint);
   } else if(typeof datapoint[0][0] == "number") {
-    vol = new convnetjs.Vol(datapoint.length, datapoint[0].length, 0);
+    vol = new convnetjs.Vol(datapoint.length, datapoint[0].length, 1);
     for(var j = 0; j < datapoint.length; j++) {
       for(var k = 0; k < datapoint[j].length; k++) {
         vol.set(j, k, 0, datapoint[j][k]);
