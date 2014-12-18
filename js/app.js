@@ -79,6 +79,7 @@ App = React.createClass({
       } else if ((learner.net != null) && learner.train_labels.length > 0) {
         labelIndex = learner.predictLabel(normalizedFrame);
         console.log("predicting");
+        _this.flashElement(document.getElementsByClassName('gesture_label')[labelIndex]);
         return _this.setState({
           prediction: _this.state.labels[labelIndex]
         });
@@ -151,11 +152,6 @@ App = React.createClass({
     return setTimeout((function() {
       return e.className = 'gesture_label';
     }), 750);
-  },
-  componentDidMount: function() {
-    return setTimeout((function() {
-      return this.flashElement(document.getElementsByClassName('gesture_label')[0]);
-    }).bind(this), 300);
   },
   setGestureName: function(e) {
     var index, labels;
