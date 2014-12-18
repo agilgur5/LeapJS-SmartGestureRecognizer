@@ -2,7 +2,7 @@ window.FingerUtils = {
   flattenFingers: (fingers) ->
     flattenedFingers = [].concat.apply([], fingers)
     frame = flattenedFingers.map((flatFinger) ->
-      console.log('Flat finger: ' + JSON.stringify(flatFinger))
+      #console.log('Flat finger: ' + JSON.stringify(flatFinger))
       flatBones = [].concat.apply([], flatFinger.bones)
       flatterBones = [].concat.apply([], flatBones)
       return (
@@ -13,7 +13,7 @@ window.FingerUtils = {
         .concat(flatFinger.pip)
       )
     )
-    console.log('Frame: ' + JSON.stringify(frame))
+    #console.log('Frame: ' + JSON.stringify(frame))
     return frame
   toFrame: (allPositions) ->
     fingers = allPositions.fingers

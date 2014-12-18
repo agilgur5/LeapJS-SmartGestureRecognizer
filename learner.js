@@ -44,14 +44,14 @@ learner.addData = function(train_data, train_labels) {
 */
 learner.createNet = function(opts) {
   clearInterval(this.currentThreadID); // stop previous net's learning
-  delete this.currentNet; // delete previous net from memory
 
   var opts = opts || {};
-  var magicNet = new convnetjs.MagicNet(learner.createVolumes(this.train_data), this.train_labels, opts);
+  this.currentNet = new convnetjs.MagicNet(this.createVolumes(this.train_data), this.train_labels, opts);
   
   // start training MagicNet. Every call trains all candidates in current batch
-  this.currentThreadID = setInterval(magicNet.step, 0);
-  return this.currentNet = magicNet;
+  console.log(this.currentNet);
+  this.currentThreadID = setInterval(this.currentNet.step, 0);
+  return this.currentNet;
 }
 
 /* 
@@ -61,7 +61,7 @@ learner.createNet = function(opts) {
   @return the predicted label, a number corresponding to one from train_labels
 */
 learner.predictLabel = function(datapoint) {
-  return this.currentNet.predict(learner.createVolume(datapoint));
+  return this.currentNet.predict(this.createVolume(datapoint));
 }
 
 
@@ -74,7 +74,7 @@ learner.predictLabel = function(datapoint) {
 learner.predictLabels = function(test_data) {
   var test_labels = [];
   for(var i = 0; i < test_data.length; i++) {
-    test_labels.push(predictLabel(test_data[i]));
+    test_labels.push(this.predictLabel(test_data[i]));
   }
   return test_labels;
 }
@@ -91,10 +91,10 @@ learner.createVolume = function(datapoint) {
   if(typeof datapoint[0] == "number") {
     vol = new convnetjs.Vol(datapoint);
   } else if(typeof datapoint[0][0] == "number") {
-    vol = new convnetjs.Vol(0, datapoint.length, datapoint[0].length);
+    vol = new convnetjs.Vol(datapoint.length, datapoint[0].length, 0);
     for(var j = 0; j < datapoint.length; j++) {
       for(var k = 0; k < datapoint[j].length; k++) {
-        vol.set(0, j, k, datapoint[j][k]);
+        vol.set(j, k, 0, datapoint[j][k]);
       }
     }
   } else {
@@ -119,7 +119,8 @@ learner.createVolume = function(datapoint) {
 learner.createVolumes = function(train_data) {
   var volArr = [];
   for(var i = 0; i < train_data.length; i++) {
-    volArr.push(learner.createVolume(train_data[i]));
+    volArr.push(this.createVolume(train_data[i]));
   }
+  console.log(volArr);
   return volArr;
 }

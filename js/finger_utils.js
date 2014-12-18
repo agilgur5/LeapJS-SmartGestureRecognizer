@@ -6,12 +6,12 @@
       flattenedFingers = [].concat.apply([], fingers);
       frame = flattenedFingers.map(function(flatFinger) {
         var flatBones, flatterBones;
-        console.log('Flat finger: ' + JSON.stringify(flatFinger));
+        //console.log('Flat finger: ' + JSON.stringify(flatFinger));
         flatBones = [].concat.apply([], flatFinger.bones);
         flatterBones = [].concat.apply([], flatBones);
         return [flatFinger.x, flatFinger.y, flatFinger.z].concat(flatterBones).concat(flatFinger.dip).concat(flatFinger.mcp).concat(flatFinger.pip);
       });
-      console.log('Frame: ' + JSON.stringify(frame));
+      //console.log('Frame: ' + JSON.stringify(frame));
       return frame;
     },
     toFrame: function(allPositions) {
