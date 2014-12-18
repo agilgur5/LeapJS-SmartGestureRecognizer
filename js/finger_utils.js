@@ -9,7 +9,7 @@
         //console.log('Flat finger: ' + JSON.stringify(flatFinger));
         flatBones = [].concat.apply([], flatFinger.bones);
         flatterBones = [].concat.apply([], flatBones);
-        return [flatFinger.x, flatFinger.y, flatFinger.z].concat(flatterBones).concat(flatFinger.dip).concat(flatFinger.mcp).concat(flatFinger.pip);
+        return [flatFinger.x, flatFinger.y, flatFinger.z]//.concat(flatterBones).concat(flatFinger.dip).concat(flatFinger.mcp).concat(flatFinger.pip);
       });
       //console.log('Frame: ' + JSON.stringify(frame));
       return frame;

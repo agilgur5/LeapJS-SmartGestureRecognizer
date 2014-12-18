@@ -25,11 +25,14 @@ App = React.createClass({
       var labelIndex, normalizedFrame;
       normalizedFrame = FingerUtils.toNormalizedFrame(frame);
       console.log("onframe");
+      console.log(normalizedFrame);
+      console.log(JSON.stringify(normalizedFrame));
       if (_this.state.isRecording) {
         return learner.addDatapoint(normalizedFrame, _this.state.currentLabel);
       } else if ((learner.net != null) && learner.train_labels.length > 0) {
         labelIndex = learner.predictLabel(normalizedFrame);
         console.log("predicting");
+        console.log(labelIndex);
         return _this.setState({
           prediction: _this.state.labels[labelIndex]
         });

@@ -16,9 +16,11 @@ function init() {
   controls = new THREE.TrackballControls( camera, renderer.domElement );
   controls.target.set( 0, 100, 0 );
   // palm
-  geometry = new THREE.BoxGeometry( 80, 20, 80 );
-  geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0, -30 ) );  // to to +30 if using pitch roll & yaw
+  geometry = new THREE.BoxGeometry( 60, 20, 60 );
+  geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, -10, -30 ) );  // to to +30 if using pitch roll & yaw
   material = new THREE.MeshNormalMaterial();
+  material.opacity = 0.7;
+  material.transparent = true;
   palm = new THREE.Mesh( geometry, material );
   scene.add( palm );
   // phalanges
@@ -34,7 +36,7 @@ Leap.loop( function( frame ) {
   if ( frame.hands.length ) {
     hand = frame.hands[0];
     palm.position.set( hand.palmPosition[0], hand.palmPosition[1], hand.palmPosition[2] );
-    //      palm.rotation.set( hand.pitch(), -hand.yaw(), hand.roll() );
+    //palm.rotation.set( hand.pitch(), -hand.yaw(), hand.roll() );
     direction = new THREE.Vector3( hand.direction[0], hand.direction[1], hand.direction[2] );  // best so far
     palm.lookAt( direction.add( palm.position ) );
     palm.rotation.z = -hand.roll();
