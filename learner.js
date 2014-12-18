@@ -25,7 +25,6 @@ learner.addDatapoint = function(datapoint, train_label) {
   this.train_data.push(datapoint);  
   this.train_labels.push(train_label);
   this.trainer.train(this.createVolume(datapoint), train_label);
-  console.log(this.train_data);
 }
 
 /*
@@ -47,17 +46,6 @@ learner.addData = function(train_data, train_labels) {
   @return the MagicNet
 */
 learner.createNet = function() {
-  
-  /* old magicnet code
-  clearInterval(this.currentThreadID); // stop previous net's learning
-
-  var opts = opts || {};
-  var magicNet = new convnetjs.MagicNet(this.createVolumes(this.train_data), this.train_labels, opts);
-  
-  start training MagicNet. Every call trains all candidates in current batch
-  this.currentThreadID = setInterval(function() {
-    magicNet.step();
-  }, 0); */
 
   var layer_defs = [];
   // input layer of size 5x48x1 (all volumes are 3D)
@@ -65,7 +53,8 @@ learner.createNet = function() {
   // some fully connected layers
   //layer_defs.push({type:'fc', num_neurons:20, activation:'relu'});
   //layer_defs.push({type:'fc', num_neurons:20, activation:'relu'});
-  layer_defs.push({type:'conv', sx:3, filters:2, activation:'relu'});
+  layer_defs.push({type:'conv', sx:2, filters:2, activation:'tanh'});
+  //layer_defs.push({type:'conv', sx:2, filters:2, activation:'tanh'});
   //layer_defs.push({type:'conv', sx:4, pad:1, filters:10, stride:1, activation:'relu'});
   // a softmax classifier predicting probabilities for three classes: 0,1,2
   layer_defs.push({type:'softmax', num_classes:3});
@@ -94,8 +83,6 @@ learner.createNet = function() {
   @return the predicted label, a number corresponding to one from train_labels
 */
 learner.predictLabel = function(datapoint) {
-  // old magicnet version
-  //return this.net.predict(this.createVolume(datapoint));
   var vol = this.net.forward(this.createVolume(datapoint));
   console.log(vol);
   console.log(vol.w);
